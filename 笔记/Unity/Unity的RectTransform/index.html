@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="mask-icon" href="/images/Book_and_Quill_JE2_BE2.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="RectTransformUnity API RectTransforms 用于 GUI，不过也可以用于其他情况。 它用于存储和操作矩形的位置、大小和锚定，并支持各种形式的缩放（基于父 RectTransform）。 Anchors长得像下面这样">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity的RectTransform">
+<meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/index.html">
+<meta property="og:site_name" content="MPasser&#39;s blog">
+<meta property="og:description" content="RectTransformUnity API RectTransforms 用于 GUI，不过也可以用于其他情况。 它用于存储和操作矩形的位置、大小和锚定，并支持各种形式的缩放（基于父 RectTransform）。 Anchors长得像下面这样">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/Anchors%E5%BD%A2%E7%8A%B6.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/%E9%94%9A%E7%82%B9%E5%9D%90%E6%A0%87.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/Anchors%E6%98%AF%E7%82%B9%E7%9A%84%E6%83%85%E5%86%B5.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/Anchors%E4%B8%8D%E6%98%AF%E7%82%B9%E7%9A%84%E6%83%85%E5%86%B5.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/offset%E5%9D%90%E6%A0%87.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/anchoredPosition%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/sizeDelta%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/Rect%E5%90%84%E5%8F%98%E9%87%8F%E5%90%AB%E4%B9%89.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/SetSizeWithCurrentAnchors%E7%A4%BA%E4%BE%8B.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/SetInsetAndSizeFromParentEdge%E6%89%A7%E8%A1%8C%E5%89%8D.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/SetInsetAndSizeFromParentEdge%E6%89%A7%E8%A1%8C%E5%90%8E.png">
+<meta property="article:published_time" content="2023-06-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-17T04:19:34.017Z">
+<meta property="article:author" content="MPasser">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/Anchors%E5%BD%A2%E7%8A%B6.png">
+
+<link rel="canonical" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Unity的RectTransform | MPasser's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MPasser's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity的RectTransform
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-28T00:00:00+08:00">2023-06-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-17 12:19:34" itemprop="dateModified" datetime="2023-08-17T12:19:34+08:00">2023-08-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="RectTransform"><a href="#RectTransform" class="headerlink" title="RectTransform"></a>RectTransform</h2><p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/cn/2020.3/ScriptReference/RectTransform.html">Unity API</a></p>
+<p>RectTransforms 用于 GUI，不过也可以用于其他情况。 它用于存储和操作矩形的位置、大小和锚定，并支持各种形式的缩放（基于父 RectTransform）。</p>
+<h2 id="Anchors"><a href="#Anchors" class="headerlink" title="Anchors"></a>Anchors</h2><p>长得像下面这样</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/Anchors%E5%BD%A2%E7%8A%B6.png" alt="Anchors形状.png"></p>
+<p>本质上也是一个矩形，使用anchorMin和anchorMax描述它的位置。这是两个Vector2变量，分别代表着Anchors矩形左下角的点，和右上角的点。</p>
+<p>Anchors的重要作用，就是无论父物体如何变化，子物体相对于父物体上Anchors的相对位置都不变。</p>
+<p><strong>描述anchorMin或anchorMax位置的x和y坐标</strong>，都在[0,1]范围内，含义是该点相对于父物体的位置比例。如果点在父物体的左下角，是(0,0)；在父物体的右上角，是(1,1)；在父物体的正中央，是(0.5,0.5)。</p>
+<p>例如父物体是一个宽200，高100的矩形，如果anchorMin的位置相对父物体左下角，宽方向距离为60，高方向距离为70，则此anchorMin的坐标应为(60&#x2F;200, 70&#x2F;100) &#x3D; (0.3, 0.7)。</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/%E9%94%9A%E7%82%B9%E5%9D%90%E6%A0%87.png" alt="锚点坐标.png"></p>
+<p>Anchors矩形的左下角和右上角，即anchorMin和anchorMax坐标确定后，Anchors矩形也就确定了。</p>
+<p>在Inspector中，如果anchorMin和anchorMax相同，即Anchors矩形是一个点，则通过PosX&#x2F;Y和Hight&#x2F;Width描述物体位置大小，Pos是从Anchors点到Pivot点的矢量，Hight&#x2F;Width是物体的长宽。</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/Anchors%E6%98%AF%E7%82%B9%E7%9A%84%E6%83%85%E5%86%B5.png" alt="Anchors是点的情况.png"></p>
+<p>如果Anchors矩形不是点了，则通过Top&#x2F;Bottom&#x2F;Left&#x2F;Right描述物体大小位置，分别表示从Anchor矩形的某条边到物体对应边的矢量距离，可正可负。</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/Anchors%E4%B8%8D%E6%98%AF%E7%82%B9%E7%9A%84%E6%83%85%E5%86%B5.png" alt="Anchors不是点的情况.png"></p>
+<h2 id="Pivot"><a href="#Pivot" class="headerlink" title="Pivot"></a>Pivot</h2><p>可以理解为物体的重心，物体的旋转和缩放，都是以Pivot点为基准。在Anchors是点的情况下配合PosX&#x2F;Y描述物体位置。</p>
+<p>Pivot点的坐标也是描述的比例，但是相对当前物体的比例。</p>
+<h2 id="offset"><a href="#offset" class="headerlink" title="offset"></a>offset</h2><p>物体实际位置到Anchors位置的偏移</p>
+<p>描述offset时，也需要两个Vector2变量offsetMin和offsetMax，但它们代表的不是点，而是一个二维距离。</p>
+<p>offsetMin表示Anchor左下角到游戏物体左下角的矢量，offsetMax表示游戏物体右上角到Anchor右上角的矢量。</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/offset%E5%9D%90%E6%A0%87.png" alt="offset坐标.png"></p>
+<h2 id="anchoredPosition"><a href="#anchoredPosition" class="headerlink" title="anchoredPosition"></a>anchoredPosition</h2><p>可以大致理解为从Anchors矩形重心到物体重心的矢量。</p>
+<p>首先要算出从Anchors矩形重心的位置，就是将物体Pivot比例坐标的值，带入到Anchors矩形中，算出来的坐标点。</p>
+<p>然后从算出来的坐标点出发，到物体重心连成的矢量，就是anchoredPosition。</p>
+<p>例如下方的例子，Pivot &#x3D; (0.2, 0.4)，Anchors矩形重心的位置离左下角的坐标就是(20, 40)。到物体重心连成的矢量，就是anchoredPosition，其余计算见图，最终anchoredPosition &#x3D; (32, -8)</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/anchoredPosition%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F.png" alt="anchoredPosition计算方式.png"></p>
+<p>看上去还是当Anchors矩形是一个点的场景下比较好用，anchoredPosition就是Anchors点到物体Pivot点的矢量。</p>
+<h2 id="sizeDelta"><a href="#sizeDelta" class="headerlink" title="sizeDelta"></a>sizeDelta</h2><p>表示物体矩形与其Anchors矩形相比更大或更小的程度。这个值和物体矩形的位置没有关系。</p>
+<p>sizeDelta.x就是物体矩形的宽度，减去其Anchors矩形的宽度;sizeDelta.y就是物体矩形的高度，减去其Anchors矩形的高度。</p>
+<p>例如下面的粉方框，Anchors矩形的宽高都是100，物体矩形宽60，高40，那它的sizeDelta &#x3D; (60-100, 40-100) &#x3D; (-60, -40)</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/sizeDelta%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F.png" alt="sizeDelta计算方式.png"></p>
+<p>所以，如果Anchors矩形是一个点，那Anchors矩形的长宽都是0，sizeDelta就能直接表示物体矩形的宽高了。</p>
+<h2 id="rect"><a href="#rect" class="headerlink" title="rect"></a>rect</h2><p>Rect类用来描述一个矩形，RectTransform.rect描述的就是此RectTransform物体的矩形。</p>
+<p>Rect没有外部参考系，里面的变量只和矩形自己有关，各个变量含义如下</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/Rect%E5%90%84%E5%8F%98%E9%87%8F%E5%90%AB%E4%B9%89.png" alt="Rect各变量含义.png"></p>
+<h2 id="SetSizeWithCurrentAnchors"><a href="#SetSizeWithCurrentAnchors" class="headerlink" title="SetSizeWithCurrentAnchors"></a>SetSizeWithCurrentAnchors</h2><p>以Pivot为基准，直接设置物体矩形的宽或高，Anchors不会受到影响。</p>
+<p>比如原先物体的宽是100，Pivot的x为0.1，当执行<code>SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 200)</code>的时候，物体会向左伸长10，向右伸长90</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/SetSizeWithCurrentAnchors%E7%A4%BA%E4%BE%8B.png" alt="SetSizeWithCurrentAnchors示例.png"></p>
+<h2 id="SetInsetAndSizeFromParentEdge"><a href="#SetInsetAndSizeFromParentEdge" class="headerlink" title="SetInsetAndSizeFromParentEdge"></a>SetInsetAndSizeFromParentEdge</h2><p>直接设置物体矩形的大小，和相对于父物体的位置。和物体的Anchors和Pivot没有关系。</p>
+<p>三个参数 (RectTransform.Edge edge, float inset, float size)</p>
+<p>会对Anchors产生影响。执行之后，可以看到Anchors发生相应的变化，根据参数 RectTransform.Edge 相当于点击了Inspector中Anchor Presets中的Left、Right、Top或Bottom</p>
+<p>例如，原先的物体设置是这样</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/SetInsetAndSizeFromParentEdge%E6%89%A7%E8%A1%8C%E5%89%8D.png" alt="SetInsetAndSizeFromParentEdge执行前.png"></p>
+<p>执行完<code>GetComponent&lt;RectTransform&gt;().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 10, 40);</code>之后是这样</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/SetInsetAndSizeFromParentEdge%E6%89%A7%E8%A1%8C%E5%90%8E.png" alt="SetInsetAndSizeFromParentEdge执行后.png"></p>
+<h2 id="GetLocalCorners"><a href="#GetLocalCorners" class="headerlink" title="GetLocalCorners"></a>GetLocalCorners</h2><p>获取物体矩形左下、左上、右上、右下角<strong>相对于Pivot点</strong>的位置坐标。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E6%80%A7%EF%BC%9A%E9%A3%8E%E9%99%A9%E5%9B%9E%E6%8A%A5%E7%90%86%E8%AE%BA/" rel="prev" title="游戏性：风险回报理论">
+      <i class="fa fa-chevron-left"></i> 游戏性：风险回报理论
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RectTransform"><span class="nav-number">1.</span> <span class="nav-text">RectTransform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Anchors"><span class="nav-number">2.</span> <span class="nav-text">Anchors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pivot"><span class="nav-number">3.</span> <span class="nav-text">Pivot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#offset"><span class="nav-number">4.</span> <span class="nav-text">offset</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#anchoredPosition"><span class="nav-number">5.</span> <span class="nav-text">anchoredPosition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sizeDelta"><span class="nav-number">6.</span> <span class="nav-text">sizeDelta</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rect"><span class="nav-number">7.</span> <span class="nav-text">rect</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SetSizeWithCurrentAnchors"><span class="nav-number">8.</span> <span class="nav-text">SetSizeWithCurrentAnchors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SetInsetAndSizeFromParentEdge"><span class="nav-number">9.</span> <span class="nav-text">SetInsetAndSizeFromParentEdge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GetLocalCorners"><span class="nav-number">10.</span> <span class="nav-text">GetLocalCorners</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MPasser</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://mpasser.github.io/note/" title="Home → https:&#x2F;&#x2F;mpasser.github.io&#x2F;note&#x2F;"><i class="fa fa-home fa-fw"></i>Home</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/21327295" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;21327295" rel="noopener" target="_blank"><i class="fa fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/MPasser" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MPasser" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MPasser</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

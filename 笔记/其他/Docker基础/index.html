@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="mask-icon" href="/images/Book_and_Quill_JE2_BE2.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="简介Docker产生背景：  不同开发角色因软件运行环境（操作系统、软件环境或引用配置等）不同而导致的矛盾。 集群环境下每个节点都需要配置相同的环境。  Docker是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可以只的容器中，然后发布到任何流行的Linux机器上，也可以实现虚拟化。 相对于虚拟机模拟一个完成的操作系统，Docker并非模拟一个完整操作系统，没有硬件的虚拟，而">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker基础">
+<meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/Docker%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="MPasser&#39;s blog">
+<meta property="og:description" content="简介Docker产生背景：  不同开发角色因软件运行环境（操作系统、软件环境或引用配置等）不同而导致的矛盾。 集群环境下每个节点都需要配置相同的环境。  Docker是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可以只的容器中，然后发布到任何流行的Linux机器上，也可以实现虚拟化。 相对于虚拟机模拟一个完成的操作系统，Docker并非模拟一个完整操作系统，没有硬件的虚拟，而">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-17T04:19:34.017Z">
+<meta property="article:author" content="MPasser">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/Docker%E5%9F%BA%E7%A1%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Docker基础 | MPasser's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MPasser's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/Docker%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker基础
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-17 00:00:00" itemprop="dateCreated datePublished" datetime="2022-08-17T00:00:00+08:00">2022-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-17 12:19:34" itemprop="dateModified" datetime="2023-08-17T12:19:34+08:00">2023-08-17</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Docker产生背景：</p>
+<ul>
+<li>不同开发角色因软件运行环境（操作系统、软件环境或引用配置等）不同而导致的矛盾。</li>
+<li>集群环境下每个节点都需要配置相同的环境。</li>
+</ul>
+<p>Docker是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可以只的容器中，然后发布到任何流行的Linux机器上，也可以实现虚拟化。</p>
+<p>相对于虚拟机模拟一个完成的操作系统，Docker并非模拟一个完整操作系统，没有硬件的虚拟，而是<strong>对进程进行隔离</strong>，从而更轻便高效。</p>
+<p>容器使用的是沙箱机制，互相隔离，独立安全</p>
+<p>可将容器看做是一个简易版的Linux环境，包括用户权限、文件系统和隐形的应用等。</p>
+<p><a target="_blank" rel="noopener" href="https://www.docker.com/">Docker官网</a></p>
+<p>利用Docker，可以做到：</p>
+<ul>
+<li>将软件及其运行环境打包成一个镜像Image并发布（到Docker仓库）</li>
+<li>从Docker仓库下载获取镜像，运行后即可获取同样的环境（容器）。</li>
+</ul>
+<h3 id="基本术语"><a href="#基本术语" class="headerlink" title="基本术语"></a>基本术语</h3><ul>
+<li>Docker主机（Host）。安装了Docker程序的主机，运行Docker守护进程。</li>
+<li>Docker镜像（Image）。将软件及其运行环境打包好的模板，用于创建容器，一个镜像可创建多个容器。</li>
+<li>Docker容器（Container）。运行镜像后生成的实例。每运行一次镜像就会产生一个容器，容器可以启动、停止或删除。</li>
+<li>Docker仓库（Repository）。用于保存镜像，其中包含了许多镜像，每个镜像都有不同的标签Tag，一般就是表示不同的软件版本。<a target="_blank" rel="noopener" href="https://hub.docker.com/">Docker官方仓库</a></li>
+</ul>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><p>有两种方式安装Docker</p>
+<p>一个是使用官方脚本自动安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用国内 daocloud 一键安装命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -sSL https://get.daocloud.io/docker | sh</span><br></pre></td></tr></table></figure>
+
+<p>另一个是手动安装</p>
+<p>较旧的 Docker 版本称为 docker 或 docker-engine 。如果已安装这些程序，需要卸载它们以及相关的依赖项。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">yum remove docker \</span><br><span class="line">    docker-client \</span><br><span class="line">    docker-client-latest \</span><br><span class="line">    docker-common \</span><br><span class="line">    docker-latest \</span><br><span class="line">    docker-latest-logrotate \</span><br><span class="line">    docker-logrotate \</span><br><span class="line">    docker-engine</span><br></pre></td></tr></table></figure>
+
+<p>在新主机上首次安装 Docker Engine-Community 之前，需要设置 Docker 仓库。之后可以从仓库安装和更新 Docker。</p>
+<p>安装所需的软件包。yum-utils 提供了 yum-config-manager ，并且 device mapper 存储驱动程序需要 device-mapper-persistent-data 和 lvm2</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install -y yum-utils \</span><br><span class="line">    device-mapper-persistent-data \</span><br><span class="line">    lvm2</span><br></pre></td></tr></table></figure>
+
+<p>使用以下命令来设置稳定的仓库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 官方源地址</span></span><br><span class="line">yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://download.docker.com/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+
+<p>可以选择国内的一些源地址</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 阿里云</span></span><br><span class="line">yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line"><span class="comment"># 清华大学源</span></span><br><span class="line">yum-config-manager \</span><br><span class="line">    --add-repo \</span><br><span class="line">    https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+
+<p>安装 Docker Engine-Community</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install docker-ce docker-ce-cli containerd.io</span><br><span class="line"><span class="comment"># 需要接受GPG秘钥</span></span><br></pre></td></tr></table></figure>
+
+<p>一些命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker version <span class="comment"># 查看Docker版本</span></span><br><span class="line">systemctl start docker <span class="comment"># 启动Docker</span></span><br><span class="line">systemctl stop docker <span class="comment"># 停止Docker</span></span><br><span class="line">systemctl status docker <span class="comment"># 查看Docker状态</span></span><br><span class="line">systemctl restart docker <span class="comment"># 重启Docker</span></span><br><span class="line">systemctl <span class="built_in">enable</span> docker <span class="comment"># 设置开机自动启动</span></span><br></pre></td></tr></table></figure>
+
+<p>运行命令，验证安装成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<p>默认镜像仓库在国外，可能会比较慢，可设置镜像仓库</p>
+<p>修改daemon配置文件&#x2F;etc&#x2F;docker&#x2F;daemon.json</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://g45y6ux6.mirror.aliyuncs.com&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后，重启守护进程和docker</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<p>另外几个常用的镜像</p>
+<ul>
+<li>科大镜像：<a target="_blank" rel="noopener" href="https://docker.mirrors.ustc.edu.cn/">https://docker.mirrors.ustc.edu.cn/</a></li>
+<li>网易：<a target="_blank" rel="noopener" href="https://hub-mirror.c.163.com/">https://hub-mirror.c.163.com/</a></li>
+<li>七牛云加速器：<a target="_blank" rel="noopener" href="https://reg-mirror.qiniu.com/">https://reg-mirror.qiniu.com</a></li>
+</ul>
+<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><p>常用的几个镜像操作</p>
+<table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">docker search 关键字</td>
+<td align="left">查找镜像，默认从Docker Hub里找信息</td>
+</tr>
+<tr>
+<td align="left">docker pull 镜像名:tag</td>
+<td align="left">拉取下载镜像，tag表示软件版本，不指定则为latest</td>
+</tr>
+<tr>
+<td align="left">docker images</td>
+<td align="left">查看所有本地镜像</td>
+</tr>
+<tr>
+<td align="left">docker inspect 镜像ID</td>
+<td align="left">获取镜像的元信息，详细信息</td>
+</tr>
+<tr>
+<td align="left">docker rmi 镜像ID或镜像名:tag</td>
+<td align="left">删除指定镜像</td>
+</tr>
+<tr>
+<td align="left">docker history 镜像ID或镜像名:tag</td>
+<td align="left">查看镜像的变更历史</td>
+</tr>
+</tbody></table>
+<p>常用的几个容器操作</p>
+<table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">docker run 镜像ID或镜像名:tag</td>
+<td align="left">创建并启动容器。参数太多了，下面单开一个表说明</td>
+</tr>
+<tr>
+<td align="left">docker ps -a -q</td>
+<td align="left">查看正在运行的容器，-a 查看所有容器，包括未运行的，-q 只显示容器ID</td>
+</tr>
+<tr>
+<td align="left">docker start 容器ID或容器名称</td>
+<td align="left">启动容器</td>
+</tr>
+<tr>
+<td align="left">docker stop 容器ID或容器名称</td>
+<td align="left">停止正在运行的容器</td>
+</tr>
+<tr>
+<td align="left">docker rm -f 容器ID或容器名称</td>
+<td align="left">删除容器，-f强制删除</td>
+</tr>
+<tr>
+<td align="left">docker logs 容器ID或容器名称</td>
+<td align="left">查看容器的日志</td>
+</tr>
+<tr>
+<td align="left">docker exec -it 容器ID或容器名称 &#x2F;bin&#x2F;bash</td>
+<td align="left">进入正在运行的容器中并开启一个交互模式的终端，可在容器中执行操作</td>
+</tr>
+<tr>
+<td align="left">docker cp 主机中的文件路径 容器ID或容器名称:容器路径</td>
+<td align="left">将主机中文件拷贝到容器中。反过来的话，将路径对调就行</td>
+</tr>
+<tr>
+<td align="left">docker inspect 容器ID或容器名称</td>
+<td align="left">查看容器的元信息</td>
+</tr>
+</tbody></table>
+<p>docker run 常用参数含义</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">–name 容器名</td>
+<td align="left">指定容器名，不指定则自动命名</td>
+</tr>
+<tr>
+<td align="left">-i</td>
+<td align="left">以交互模式运行容器</td>
+</tr>
+<tr>
+<td align="left">-t</td>
+<td align="left">分配一个伪终端，即命令行，通常组合使用 -it</td>
+</tr>
+<tr>
+<td align="left">-d</td>
+<td align="left">以守护进程方式运行</td>
+</tr>
+<tr>
+<td align="left">-p 主机端口:容器端口</td>
+<td align="left">指定端口映射，将主机端口映射到容器内的端口</td>
+</tr>
+<tr>
+<td align="left">-v 主机文件路径:容器文件路径(:ro)</td>
+<td align="left">设置文件挂载，加ro表示容器内的文件设为只读模式</td>
+</tr>
+<tr>
+<td align="left">-e ENV_VAR&#x3D;value</td>
+<td align="left">设置环境变量</td>
+</tr>
+</tbody></table>
+<p><strong>docker容器相当一个轻量级的Linux运行环境</strong></p>
+<p>进程不是直接在host运行的，所以有几个问题</p>
+<h3 id="端口映射"><a href="#端口映射" class="headerlink" title="端口映射"></a>端口映射</h3><p>对于一些会提供web相关服务的进程，进程对外提供的端口是相对于容器，而非host主机，而在网络上则只能直接访问主机，所以端口需要映射，使用如下命令直接设置</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name 容器名 -p 主机端口:容器端口</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件拷贝和挂载目录"><a href="#文件拷贝和挂载目录" class="headerlink" title="文件拷贝和挂载目录"></a>文件拷贝和挂载目录</h3><p>容器内的Linux环境是没装vi编辑器的，想修改容器内文件的话，可以在主机中先编辑好文件，再用命令将文件复制到容器中。</p>
+<p>有些场景下，容器内进程的文件需要反复修改调试，总是拷贝会非常麻烦，可以设置挂载目录，将host主机中的目录挂载到容器，容器中进程可直接访问到主机目录。</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">可以挂载文件或者文件目录</span></span><br><span class="line">docker run --name 容器名 -v 主机文件路径:容器文件路径</span><br></pre></td></tr></table></figure>
+
+<h2 id="镜像结构"><a href="#镜像结构" class="headerlink" title="镜像结构"></a>镜像结构</h2><p>镜像是一种轻量级、可执行的独立软件包，<strong>用来打包软件运行环境和基于运行环境的软件，包含运行某个软件多需要的所有内容</strong>。</p>
+<p>基于UnionFS联合文件系统，采用分层结构。例如对于Tomcat镜像，其的分层可以大致分为：Kernel-&gt;centOS-&gt;JDK-&gt;Tomcat</p>
+<p>使用分层结构的好处在于共享资源、便于复用（许多镜像都是从相同的Base基础镜像构建而来的，基础镜像只需要保存一份）</p>
+<p>镜像都是只读的，由镜像生成的容器是可修改的</p>
+<h2 id="创建镜像"><a href="#创建镜像" class="headerlink" title="创建镜像"></a>创建镜像</h2><p>有时从Docker镜像仓库中下载的镜像不能满足我们的要求，此时可以基于这个镜像（基础镜像）封装一个自己的镜像。有两种方式：</p>
+<ul>
+<li>更新镜像：使用docker commit 命令</li>
+<li>构建镜像：使用docker build 命令，需要创建DockerFile文件</li>
+</ul>
+<h3 id="更新镜像"><a href="#更新镜像" class="headerlink" title="更新镜像"></a>更新镜像</h3><p>先使用基础镜像创建一个容器，然后对容器进行修改，最后使用commit命令提交为一个新的镜像。</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Usage:  docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]</span><br><span class="line"></span><br><span class="line">Create a new image from a container&#x27;s changes. 从一个以改动的容器创建一个镜像。</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -a, --author string    Author (e.g., &quot;John Hannibal Smith &lt;hannibal@a-team.com&gt;&quot;) 作者信息。</span><br><span class="line">  -c, --change list      Apply Dockerfile instruction to the created image 使用Dockerfile中的命令后生成镜像。</span><br><span class="line">  -m, --message string   Commit message. 提交描述。</span><br><span class="line">  -p, --pause            Pause container during commit (default true). 提交时将容器暂停，默认为真。</span><br></pre></td></tr></table></figure>
+
+<h3 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h3><p>根据Dockerfile文件来自动构建镜像。</p>
+<p>举例，将默认Tomcat镜像的主页更改，构建新镜像，编辑DockerFile如下</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">基础镜像</span></span><br><span class="line">FROM tomcat</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">作者信息</span></span><br><span class="line">MAINTAINER Adam</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">执行命令</span></span><br><span class="line">RUN rm -f /usr/local.tomcat/webapps/ROOT/index.jsp</span><br><span class="line">RUN echo &quot;welcome to tomcat!&quot; &gt; /usr/local/tomcat/webapps/ROOT/index.html</span><br></pre></td></tr></table></figure>
+
+<p>构建新镜像，命令如下</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">docker build -f Dockerfile文件 -t 镜像名:tag 命令执行的上下文</span></span><br><span class="line">docker build -f ./Dockerfile -t Adam/tomcat:v2 .</span><br></pre></td></tr></table></figure>
+
+<h2 id="Dockerfile详解"><a href="#Dockerfile详解" class="headerlink" title="Dockerfile详解"></a>Dockerfile详解</h2><p>Dockerfile是用来构建Docker镜像的文件，由一系列命令和参数构成的脚本。</p>
+<h3 id="语法规则"><a href="#语法规则" class="headerlink" title="语法规则"></a>语法规则</h3><ul>
+<li>文件开头必须使用FROM指令，指定基础镜像</li>
+<li>指令大写，且每个指令都有参数，指令顺序执行</li>
+<li>每条指令都会创建一个新的镜像层并提交</li>
+<li><code>#</code>表示注释</li>
+</ul>
+<h3 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h3><table>
+<thead>
+<tr>
+<th align="left">指令</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">FROM</td>
+<td align="left">指定基础镜像</td>
+</tr>
+<tr>
+<td align="left">MAINTAINER</td>
+<td align="left">标明作者</td>
+</tr>
+<tr>
+<td align="left">RUN</td>
+<td align="left">构建过程中要运行的命令</td>
+</tr>
+<tr>
+<td align="left">ENV</td>
+<td align="left">设置环境变量</td>
+</tr>
+<tr>
+<td align="left">WORKDIR</td>
+<td align="left">指定默认的工作目录，即进入容器后默认进入的目录</td>
+</tr>
+<tr>
+<td align="left">VOLUME</td>
+<td align="left">创建挂载点，也称容器数据卷。但无法指定宿主机上对应的目录，其是自动生成的</td>
+</tr>
+<tr>
+<td align="left">CMD</td>
+<td align="left">指定容器启动时要运行的命令</td>
+</tr>
+<tr>
+<td align="left">ENTRYPORT</td>
+<td align="left">指定容器启动时要运行的命令</td>
+</tr>
+<tr>
+<td align="left">COPY</td>
+<td align="left">拷贝文件&#x2F;目录到镜像中</td>
+</tr>
+<tr>
+<td align="left">ADD</td>
+<td align="left">拷贝文件到镜像中，且会自动解压缩</td>
+</tr>
+<tr>
+<td align="left">EXPOSE</td>
+<td align="left">指定对外暴露的端口</td>
+</tr>
+</tbody></table>
+<p>CMD和ENTRYPOINT的区别：</p>
+<ul>
+<li>两个指定在Dockerfile中都是只有最后一条生效，之前的同类指令会被覆盖。</li>
+<li>CMD指令会被docker run 之后执行的参数覆盖。</li>
+<li>docker run之后的参数会被作为ENTRYPOINT的参数，组合成一个新的命令。</li>
+</ul>
+<p>例如Dockerfile中写了如下ENTRYPOINT指令</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ENTRYPOINT [&quot;/bin/ls&quot;,&quot;/usr/local&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>以数组的形式排列命令和参数</p>
+<p>在启动容器时添加了参数</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it imageName -l</span><br></pre></td></tr></table></figure>
+
+<p>最后在容器中实际执行的命令，就是</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/bin/ls /usr/local -l</span><br></pre></td></tr></table></figure>
+
+<p>COPY和ADD</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">拷贝文件，文件必须在Dockerfile的同目录或子目录</span></span><br><span class="line">COPY readme.txt /usr/local</span><br><span class="line">ADD jdk-8u191-linux-x64.tar.gz /usr/local</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/YAML%E7%AE%80%E4%BB%8B/" rel="prev" title="YAML简介">
+      <i class="fa fa-chevron-left"></i> YAML简介
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/Redis%E5%9F%BA%E7%A1%80/" rel="next" title="Redis基础">
+      Redis基础 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9C%AF%E8%AF%AD"><span class="nav-number">1.1.</span> <span class="nav-text">基本术语</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-World"><span class="nav-number">2.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E6%98%A0%E5%B0%84"><span class="nav-number">3.1.</span> <span class="nav-text">端口映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%8C%82%E8%BD%BD%E7%9B%AE%E5%BD%95"><span class="nav-number">3.2.</span> <span class="nav-text">文件拷贝和挂载目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E7%BB%93%E6%9E%84"><span class="nav-number">4.</span> <span class="nav-text">镜像结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="nav-number">5.</span> <span class="nav-text">创建镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E9%95%9C%E5%83%8F"><span class="nav-number">5.1.</span> <span class="nav-text">更新镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="nav-number">5.2.</span> <span class="nav-text">构建镜像</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile%E8%AF%A6%E8%A7%A3"><span class="nav-number">6.</span> <span class="nav-text">Dockerfile详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95%E8%A7%84%E5%88%99"><span class="nav-number">6.1.</span> <span class="nav-text">语法规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4"><span class="nav-number">6.2.</span> <span class="nav-text">常用指令</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MPasser</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://mpasser.github.io/note/" title="Home → https:&#x2F;&#x2F;mpasser.github.io&#x2F;note&#x2F;"><i class="fa fa-home fa-fw"></i>Home</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/21327295" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;21327295" rel="noopener" target="_blank"><i class="fa fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/MPasser" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MPasser" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MPasser</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="mask-icon" href="/images/Book_and_Quill_JE2_BE2.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="链表哨兵节点附加在原链表最前面用来简化边界条件的附加节点，它的值域不存储任何东西，只是为了操作方便而引入。 为什么需要引入哨兵节点呢？举个例子，比如要删除某链表的第一个元素，常见的删除链表的操作是找到要删元素的前一个元素，假如记为 pre。通过： 1pre.Next &#x3D; pre.Next.Next;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="栈和队列和链表">
+<meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97%E5%92%8C%E9%93%BE%E8%A1%A8/index.html">
+<meta property="og:site_name" content="MPasser&#39;s blog">
+<meta property="og:description" content="链表哨兵节点附加在原链表最前面用来简化边界条件的附加节点，它的值域不存储任何东西，只是为了操作方便而引入。 为什么需要引入哨兵节点呢？举个例子，比如要删除某链表的第一个元素，常见的删除链表的操作是找到要删元素的前一个元素，假如记为 pre。通过： 1pre.Next &#x3D; pre.Next.Next;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-17T04:19:34.013Z">
+<meta property="article:author" content="MPasser">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97%E5%92%8C%E9%93%BE%E8%A1%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>栈和队列和链表 | MPasser's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MPasser's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97%E5%92%8C%E9%93%BE%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          栈和队列和链表
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-24 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-24T00:00:00+08:00">2021-06-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-17 12:19:34" itemprop="dateModified" datetime="2023-08-17T12:19:34+08:00">2023-08-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><h3 id="哨兵节点"><a href="#哨兵节点" class="headerlink" title="哨兵节点"></a>哨兵节点</h3><p>附加在原链表最前面用来简化边界条件的附加节点，它的值域不存储任何东西，只是为了操作方便而引入。</p>
+<p>为什么需要引入哨兵节点呢？举个例子，比如要删除某链表的第一个元素，常见的删除链表的操作是找到要删元素的前一个元素，假如记为 pre。通过：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pre.Next = pre.Next.Next;</span><br></pre></td></tr></table></figure>
+
+<p>来进行删除链表的操作。但是此时若是删除第一个元素的话，就很难进行了，因为此时第一个元素的前一个元素就是nil（空的），使用pre会报错。若此时设置了哨兵节点，pre就是哨兵节点了。这样对于链表中任何一个元素，删除都可以通过pre.Next&#x3D;pre.Next.Next的方式进行，这就是哨兵节点的作用。</p>
+<h2 id="栈和队列"><a href="#栈和队列" class="headerlink" title="栈和队列"></a>栈和队列</h2><p>栈：先入后出<br>队列：先入先出</p>
+<h3 id="双向链表实现队列和栈"><a href="#双向链表实现队列和栈" class="headerlink" title="双向链表实现队列和栈"></a>双向链表实现队列和栈</h3><p>没啥好说的，两个指针记录头和尾。</p>
+<h3 id="数组实现队列和栈"><a href="#数组实现队列和栈" class="headerlink" title="数组实现队列和栈"></a>数组实现队列和栈</h3><p>RingBuffer</p>
+<p>同样是使用两个指针记录头和尾，但不去判断比较头尾指针位置大小，而是另外记录一个变量size记录已经存了多少数据。使用size判断栈和队列是空还是满了。</p>
+<h3 id="常见面试题"><a href="#常见面试题" class="headerlink" title="常见面试题"></a>常见面试题</h3><ul>
+<li><p>实现一个特殊的栈，在基本功能的基础上，再实现返回栈中最小元素的功能。pop、push、getMin操作的时间复杂度都为O(1)</p>
+<p>准备两个栈：Data栈和min栈。</p>
+<p>push时，元素正常入Data栈，入min栈时，判断当前元素和min栈顶，哪个元素更小，谁小push谁。</p>
+<p>pop时，Data栈和min栈同步出栈，但只返回Data栈的元素。</p>
+<p>getMin时，看下当前min栈顶的元素就行。</p>
+<p>另外一种做法是：</p>
+<p>push时，元素正常入Data栈，入min栈时，判断当前元素和min栈顶大小，仅在当前元素更小的情况下，元素入min栈。</p>
+<p>pop时，判断Data栈和min栈栈顶元素，仅当两数相同时，min同步做出栈操作。</p>
+</li>
+<li><p>用栈结构实现队列结构</p>
+<p>两个栈，push栈和pop栈，入栈的时候元素直接入push栈。</p>
+<p>出栈的时候，从pop栈出，pop栈里没有元素，将push栈中所有元素全部依次弹出，入pop栈，然后从pop出栈。</p>
+<p>将push栈中所有元素全部依次弹出，入pop栈的时候，两个原则：</p>
+<ol>
+<li>pop栈必须为空</li>
+<li>push栈必须全部弹出</li>
+</ol>
+</li>
+<li><p>用队列结构实现栈结构</p>
+<p>两个队列，Data队列和help队列，元素出栈的时候，Data队列输出数据到help队列，只留最后一个元素，做最后的输出。</p>
+</li>
+</ul>
+<h2 id="一些技巧"><a href="#一些技巧" class="headerlink" title="一些技巧"></a>一些技巧</h2><ul>
+<li>额外数据结构记录（哈希表等）。</li>
+<li>快慢指针。</li>
+</ul>
+<p>例：leetcode-234 回文链表 palindrome-linked-list<br>判断链表是否为回文结构。<br>1-&gt;2-&gt;1 返回 true ，1-&gt;2-&gt;3 返回 false 。<br>要求时间复杂度为O(N)，空间复杂度为O(1) 。  </p>
+<p>解：<br>快慢指针找到链表中点，从中点开始，将链表后半部分逆序。<br>两个指针分别从链表两端next遍历比较元素值。<br>遍历过程中再将链表还原。</p>
+<p>例：将单链表按某值划分为左边小、中间相等、右边大的形式。<br>要求调整后要有稳定性。<br>要求时间复杂度为O(N)，空间复杂度为O(1)。  </p>
+<p>解：<br>新建6个节点，小于部分的头节点和尾节点，等于部分的头节点和尾节点，于部分的头节点和尾节点。遍历链表，填充三个部分，最后拼接。</p>
+<p>例：leetcode-138 复制带随机指针的链表 copy-list-with-random-pointer<br>复制含有随机指针节点的链表。<br>单链表节点里新增了Node rand; 成员。该指针可以指向链表中的任何节点或空节点。构造这个链表的<strong>深拷贝</strong>，复制链表中的指针都不应指向原链表中的节点。  </p>
+<p>解：<br>常规思路。哈希表，键值对分别设置为 旧节点、新节点。<br>优化思路。遍历旧链表，创建克隆节点，插入在原节点的next中。<br>链表就变成了 旧节点1-&gt;新节点1-&gt;旧节点2-&gt;新节点2-&gt;… 的结构，用两个节点一组的方式再次遍历，设置新节点的rand成员。</p>
+<p>例：leetcode-160 相交链表 intersection-of-two-linked-lists<br>给出两个单链表的头节点 headA 和 headB，找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。<br><strong>链表可能有环，可能无环。</strong><br>要求时间复杂度为O(N)，空间复杂度为O(1)。  </p>
+<p>解：<br>情况1：headA和headB都无环。<br>分别遍历两个链表，记录链表长度。<br>链表结尾若节点相同，则有相交节点，不同则没有。<br>找相交：设置两指针指向两个链表头，更长的链表先走 两链表长度差值 的步数，然后两指针同步向下走，第一次相同的节点即为相交节点。</p>
+<p>情况2：headA和headB，其中一个有环，一个无环。<br>这种情况下两链表不可能相交。</p>
+<p>情况3：headA和headB都有环。且不相交。<br>找出两个链表入环时的第一个节点loopA和loopB。loopA不断向下走，在遇到自己之前没遇到过loopB。</p>
+<p>情况4：headA和headB都有环，且相交节点在环外。<br>找出两个链表入环时的第一个节点loopA和loopB。此情况下loopA和loopB是同节点。按照两无环链表的方式找相交节点。</p>
+<p>情况5：headA和headB都有环，且相交节点在环内。<br>找出两个链表入环时的第一个节点loopA和loopB。loopA不断向下走，在遇到自己之前遇到了loopB。则loopA和loopB都可称作两链表的第一个相交节点。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/" rel="prev" title="复杂度和位运算">
+      <i class="fa fa-chevron-left"></i> 复杂度和位运算
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%E5%92%8C%E9%9A%8F%E6%9C%BA%E5%BF%AB%E6%8E%92/" rel="next" title="归并排序和随机快排">
+      归并排序和随机快排 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">链表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%A8%E5%85%B5%E8%8A%82%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">哨兵节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97"><span class="nav-number">2.</span> <span class="nav-text">栈和队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0%E9%98%9F%E5%88%97%E5%92%8C%E6%A0%88"><span class="nav-number">2.1.</span> <span class="nav-text">双向链表实现队列和栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%AE%9E%E7%8E%B0%E9%98%9F%E5%88%97%E5%92%8C%E6%A0%88"><span class="nav-number">2.2.</span> <span class="nav-text">数组实现队列和栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="nav-number">2.3.</span> <span class="nav-text">常见面试题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E6%8A%80%E5%B7%A7"><span class="nav-number">3.</span> <span class="nav-text">一些技巧</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MPasser</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://mpasser.github.io/note/" title="Home → https:&#x2F;&#x2F;mpasser.github.io&#x2F;note&#x2F;"><i class="fa fa-home fa-fw"></i>Home</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/21327295" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;21327295" rel="noopener" target="_blank"><i class="fa fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/MPasser" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MPasser" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MPasser</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

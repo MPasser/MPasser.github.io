@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="mask-icon" href="/images/Book_and_Quill_JE2_BE2.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="滑动窗口例：有一个整型数组arr和一个大小为w的窗口从数组的最左边滑到最右边，窗口每次向右边滑动一个位置。例如，数组为[4,3,5,2,8,1,6,7]，窗口大小为3时： 123456[4 3 5] 2 8 1 6 7 &#x2F;&#x2F;最大值为54 [3 5 2] 8 1 6 7 &#x2F;&#x2F;最大值为54 3 [5 2 8] 1 6 7 &#x2F;&#x2F;最大值为84 3 5 [2 8 1] 6 7 &#x2F;&#x2F;最大值为84 3 5 2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="滑动窗口和单调栈">
+<meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%92%8C%E5%8D%95%E8%B0%83%E6%A0%88/index.html">
+<meta property="og:site_name" content="MPasser&#39;s blog">
+<meta property="og:description" content="滑动窗口例：有一个整型数组arr和一个大小为w的窗口从数组的最左边滑到最右边，窗口每次向右边滑动一个位置。例如，数组为[4,3,5,2,8,1,6,7]，窗口大小为3时： 123456[4 3 5] 2 8 1 6 7 &#x2F;&#x2F;最大值为54 [3 5 2] 8 1 6 7 &#x2F;&#x2F;最大值为54 3 [5 2 8] 1 6 7 &#x2F;&#x2F;最大值为84 3 5 [2 8 1] 6 7 &#x2F;&#x2F;最大值为84 3 5 2">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-17T04:19:34.013Z">
+<meta property="article:author" content="MPasser">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%92%8C%E5%8D%95%E8%B0%83%E6%A0%88/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>滑动窗口和单调栈 | MPasser's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MPasser's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%92%8C%E5%8D%95%E8%B0%83%E6%A0%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          滑动窗口和单调栈
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-02 00:00:00" itemprop="dateCreated datePublished" datetime="2022-05-02T00:00:00+08:00">2022-05-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-17 12:19:34" itemprop="dateModified" datetime="2023-08-17T12:19:34+08:00">2023-08-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h2><p>例：<br>有一个整型数组arr和一个大小为w的窗口从数组的最左边滑到最右边，窗口每次向右边滑动一个位置。<br>例如，数组为[4,3,5,2,8,1,6,7]，窗口大小为3时：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[4 3 5] 2 8 1 6 7 //最大值为5</span><br><span class="line">4 [3 5 2] 8 1 6 7 //最大值为5</span><br><span class="line">4 3 [5 2 8] 1 6 7 //最大值为8</span><br><span class="line">4 3 5 [2 8 1] 6 7 //最大值为8</span><br><span class="line">4 3 5 2 [8 1 6] 7 //最大值为8</span><br><span class="line">4 3 5 2 8 [1 6 7] //最大值为7</span><br></pre></td></tr></table></figure>
+
+<p>一共输出arr.length - w + 1 个窗口最大值。实现一个函数，输入arr和窗口大小，输出窗口最大值数组。</p>
+<p>解：<br>使用双端队列。从头到尾需要保持从大到小的顺序。双端队列头部的值即为窗口内最大值。<br>当数组中一个新元素进入窗口内时，比较其和双端队列尾部元素的大小。能够严格保证从大到小的单调性时，元素直接加入双端队列尾部（入栈）。如果无法保证单调性，则队列从尾部弹出元素，直至新元素加入队列后，仍能维持队列单调性。<br>当一个新元素离开窗口（过期）时，判断这个元素和双端队列头部是否是同一个，如果是，则队列头部弹出这个值，如果不是则不需要操作。</p>
+<p>队列中记录下标更方便，举例说明用元素值是因为更清晰些。</p>
+<p>双端队列维持的实际是，<strong>在元素依次过期的情况下，元素成为窗口最大值的可能性。</strong></p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">举例，初始情况下，前三个元素进入窗口。</span><br><span class="line">Deque&#123;4&#125;</span><br><span class="line">Deque&#123;4,3&#125;</span><br><span class="line">Deque&#123;5&#125; // 在原先元素为4,3的情况下，加上5的话， 4,3,5无法严格保证从大到小的单调性，故从尾部弹出元素4和3，在加入5。</span><br><span class="line"></span><br><span class="line">窗口右滑一格</span><br><span class="line">元素2进入窗口，进入队列</span><br><span class="line">Deque&#123;5,2&#125;</span><br><span class="line">元素4出窗口，其不为头元素，不操作。</span><br><span class="line"></span><br><span class="line">窗口右滑一格</span><br><span class="line">元素8进窗口，入队，需先弹出原先比它小的元素5和2</span><br><span class="line">Deque&#123;8&#125;</span><br><span class="line">元素3出窗口，其不为头元素，不操作。</span><br><span class="line"></span><br><span class="line">窗口右滑一格</span><br><span class="line">元素1入窗口，入队</span><br><span class="line">Deque&#123;8,1&#125;</span><br><span class="line">元素5出窗口，不操作</span><br><span class="line"></span><br><span class="line">窗口右滑一格</span><br><span class="line">元素6入窗口，入队，需先弹出1</span><br><span class="line">Deque&#123;8,6&#125;</span><br><span class="line">元素2出窗口，不操作</span><br><span class="line"></span><br><span class="line">窗口右滑一格</span><br><span class="line">元素7入窗口，入队，先弹出6</span><br><span class="line">Deque&#123;8,7&#125;</span><br><span class="line">元素8出窗口，其为头元素，从队头弹出</span><br><span class="line">Deque&#123;7&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="单调栈"><a href="#单调栈" class="headerlink" title="单调栈"></a>单调栈</h2><p>例：<br>在数组中，找到对于每个元素，左边离它最近的，且比它大的那个元素。以及右边离它最近的，且比它大的那个元素。</p>
+<p>解：<br>使用单调栈，保证从栈底到栈顶从大到小的顺序。<br>遍历数组，将元素按要求压栈。元素即将入栈时，此时栈顶元素即为左边离它最近的，且比它大的元素。当元素由于需保持单调性而被弹出时，此时即将入栈的元素，即为右边离它最近的，且比它大的元素。</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">举例，现有数组[5,4,3,6,1,2,0]</span><br><span class="line">元素5入栈</span><br><span class="line">stack&#123;5&#125;</span><br><span class="line"></span><br><span class="line">元素4入栈</span><br><span class="line">stack&#123;5,4&#125;</span><br><span class="line"></span><br><span class="line">元素3入栈</span><br><span class="line">stack&#123;5,4,3&#125;</span><br><span class="line"></span><br><span class="line">元素6入栈，栈顶元素3由于比6小，需保持栈单调性，故3出栈。元素3左近大为4，右近大便为6。</span><br><span class="line">stack&#123;5,4&#125;</span><br><span class="line"></span><br><span class="line">栈顶元素4出栈，元素4左近大为5，右近大为6。</span><br><span class="line">stack&#123;5&#125;</span><br><span class="line"></span><br><span class="line">栈顶元素5出栈，元素5左近大为无，右近大为6。</span><br><span class="line">stack&#123;&#125;</span><br><span class="line"></span><br><span class="line">元素6入栈</span><br><span class="line">stack&#123;6&#125;</span><br><span class="line"></span><br><span class="line">元素1入栈</span><br><span class="line">stack&#123;6,1&#125;</span><br><span class="line"></span><br><span class="line">元素2入栈，弹出元素1，左近大为6，右近大为2</span><br><span class="line">stack&#123;6,2&#125;</span><br><span class="line"></span><br><span class="line">元素0入栈</span><br><span class="line">stack&#123;6,2,0&#125;</span><br><span class="line"></span><br><span class="line">最终栈内元素全部弹出进行结算。</span><br><span class="line">元素&#123;6,2,0&#125;出栈，右近大为无，左近大分别为无,6,2</span><br></pre></td></tr></table></figure>
+
+<p>如果数组内有重复值时，将数组元素压在一起，可以用链表或动态数组的方式。</p>
+<p>例：<br>定义数组中累计值和最小值得到乘积，叫指标A，给定一个正数数组，返回子数组中，指标A最大的值。</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">举例，现有数组[4,3,5,2,8,1,6,7]</span><br><span class="line">以元素5为最小值的子数组，只有[4]，所以其的最大指标A，为4*4=16</span><br><span class="line">以元素3为最小值的子数组，有[3]、[4,3]、[3,5]、[4,3,5]，所以其的最大指标A，为3*(4+3+5)=36</span><br></pre></td></tr></table></figure>
+
+<p>解：<br>利用单调栈，求出数组中每个元素的左近大和右近大，即可求出以当前元素为最小值时，能够包含最多元素的子数组，也就是有最大的指标A。<br>比较以每个元素为最小值时的最大指标A，求出其中最大的指标A。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E6%B0%B4%E5%A1%98%E6%8A%BD%E6%A0%B7/" rel="prev" title="水塘抽样">
+      <i class="fa fa-chevron-left"></i> 水塘抽样
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E6%A0%91%E5%BD%A2DP/" rel="next" title="树形DP">
+      树形DP <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">滑动窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%B0%83%E6%A0%88"><span class="nav-number">2.</span> <span class="nav-text">单调栈</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MPasser</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://mpasser.github.io/note/" title="Home → https:&#x2F;&#x2F;mpasser.github.io&#x2F;note&#x2F;"><i class="fa fa-home fa-fw"></i>Home</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/21327295" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;21327295" rel="noopener" target="_blank"><i class="fa fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/MPasser" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MPasser" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MPasser</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

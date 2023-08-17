@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="mask-icon" href="/images/Book_and_Quill_JE2_BE2.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="前言本地化，就是工程中的文本能支持多种语言，能根据系统信息或手动设置自动变成不同语言。 在网上找了好些方案，找到了一种感觉最简单的，但又觉得有点憨，维护成本有点高的。但总之还能用，就简单做下记录，高级方案以后再看看吧。 游戏引擎使用Unity，语言使用C# 思路">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一种文本本地化的实现思路">
+<meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/index.html">
+<meta property="og:site_name" content="MPasser&#39;s blog">
+<meta property="og:description" content="前言本地化，就是工程中的文本能支持多种语言，能根据系统信息或手动设置自动变成不同语言。 在网上找了好些方案，找到了一种感觉最简单的，但又觉得有点憨，维护成本有点高的。但总之还能用，就简单做下记录，高级方案以后再看看吧。 游戏引擎使用Unity，语言使用C# 思路">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E7%89%A9%E4%BD%93%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E7%BB%91%E5%AE%9AChangeLang%E6%96%B9%E6%B3%95.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E6%B7%BB%E5%8A%A0TextLocalizationer%E7%BB%84%E4%BB%B61.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E6%B7%BB%E5%8A%A0TextLocalizationer%E7%BB%84%E4%BB%B62.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E8%BF%90%E8%A1%8C%E6%95%88%E6%9E%9C1.png">
+<meta property="og:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E8%BF%90%E8%A1%8C%E6%95%88%E6%9E%9C2.png">
+<meta property="article:published_time" content="2023-01-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-17T04:19:34.017Z">
+<meta property="article:author" content="MPasser">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E7%89%A9%E4%BD%93%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png">
+
+<link rel="canonical" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>一种文本本地化的实现思路 | MPasser's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MPasser's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一种文本本地化的实现思路
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-01-10 00:00:00" itemprop="dateCreated datePublished" datetime="2023-01-10T00:00:00+08:00">2023-01-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-17 12:19:34" itemprop="dateModified" datetime="2023-08-17T12:19:34+08:00">2023-08-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本地化，就是工程中的文本能支持多种语言，能根据系统信息或手动设置自动变成不同语言。</p>
+<p>在网上找了好些方案，找到了一种感觉最简单的，但又觉得有点憨，维护成本有点高的。但总之还能用，就简单做下记录，高级方案以后再看看吧。</p>
+<p>游戏引擎使用Unity，语言使用C#</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>本地化文件用json格式保存，不同语言使用各自的json文件，数据格式就是一个列表，每个元素包含一个键值对。</p>
+<p>对于同一个Text文本，不同json文件中的键是相同的，值就是各个语言的本地化文本。</p>
+<p>几个核心的部件如下：</p>
+<p>pojo类</p>
+<ul>
+<li>本地化文件用json格式保存，用UnityEngine自带的JsonUtility做序列化，所以要有一个pojo类存数据。</li>
+</ul>
+<p>本地化器：</p>
+<ul>
+<li>每个需要本地化Text的组件，其所在物体都添加一个本地化器组件</li>
+<li>组件主要记录当前Text文本对应的键</li>
+<li>订阅了本地化管理器的语言改变事件，事件触发时控制刷新Text实际显示的文本。</li>
+</ul>
+<p>本地化管理器：</p>
+<ul>
+<li>包含一个语言枚举类</li>
+<li>记录当前使用的语言</li>
+<li>维护了一个字典，键是Text文本键，值为当前语言的本地化文本，字典的数据从pojo类加载</li>
+<li>提供本地化方法，传入Text文本键，返回本地化后的文本</li>
+<li>提供一个语言变更事件，供本地化器订阅，语言变更时触发</li>
+</ul>
+<p>只是描述文字的话太抽象了，直接贴一下代码</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><h3 id="json文件示例"><a href="#json文件示例" class="headerlink" title="json文件示例"></a>json文件示例</h3><p>json文件要放在Unity工程的Resources文件夹中，本地化管理器设置的本地化文件前缀，也是Resources文件夹的相对路径。</p>
+<p>English.json</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;Datas&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;_btn_change_lang&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Change Language&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果支持中文的话，则添加ChineseSimplified.json文件，其他同理</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;Datas&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;_btn_change_lang&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;变更语言&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="pojo类"><a href="#pojo类" class="headerlink" title="pojo类"></a>pojo类</h3><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"></span><br><span class="line">[<span class="meta">Serializable</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">LanguageData</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> List&lt;LanguageDataItem&gt; Datas = <span class="keyword">new</span> List&lt;LanguageDataItem&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[<span class="meta">Serializable</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">LanguageDataItem</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> key;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> <span class="keyword">value</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>既然存储键值对，为什么不直接用字典。</p>
+<p>因为Unity的序列化不支持字典，用Dictionary的话在Unity界面上看不到对应变量，没法直接编辑。</p>
+<p>然后LanguageData这里感觉可以加点meta信息之类的，但暂时没用到。</p>
+<h3 id="本地化器"><a href="#本地化器" class="headerlink" title="本地化器"></a>本地化器</h3><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"><span class="keyword">using</span> UnityEngine.UI;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TextLocalizationer</span> : <span class="title">MonoBehaviour</span> &#123;</span><br><span class="line"></span><br><span class="line">    LocalizationManager localizationManager;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">SerializeField</span>] <span class="keyword">private</span> <span class="built_in">string</span> textKey;</span><br><span class="line">    <span class="keyword">private</span> Text text;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Use this for initialization</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span> &#123;</span><br><span class="line">        localizationManager = LocalizationManager.Instance;</span><br><span class="line">        text = GetComponent&lt;Text&gt;();</span><br><span class="line"></span><br><span class="line">        LocalizationManager.OnLanguageChanged += LocalizeText;</span><br><span class="line"></span><br><span class="line">        LocalizeText();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">LocalizeText</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == text) &#123;</span><br><span class="line">            Debug.LogWarning(<span class="string">&quot;未在游戏物体 &lt;&quot;</span> + name + <span class="string">&quot;&gt; 中找到Text组件&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        text.text = localizationManager.GetString(textKey);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDestroy</span>()</span> &#123;</span><br><span class="line">        LocalizationManager.OnLanguageChanged -= LocalizeText;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>localizationManager成员。此本地化器所属的本地化管理器。</li>
+<li>text成员。需要本地化器管理的Text组件，需要和本地化器在同一个游戏物体上。</li>
+<li>Start初始化方法<ul>
+<li>成员赋值</li>
+<li>订阅本地化管理器的语言变更事件</li>
+<li>触发一次本地化方法。</li>
+</ul>
+</li>
+<li>LocalizeText。本地化方法。根据text文本键，从本地化管理器拿到对应本地化文本，给Text组件的文本赋值。</li>
+<li>OnDestroy。取消订阅语言变更事件。</li>
+</ul>
+<h3 id="本地化管理器"><a href="#本地化管理器" class="headerlink" title="本地化管理器"></a>本地化管理器</h3><figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">LocalizationManager</span> : <span class="title">MonoBehaviour</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> LocalizationManager Instance &#123; <span class="keyword">get</span> &#123; <span class="keyword">return</span> _instance; &#125; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">event</span> Action OnLanguageChanged; <span class="comment">// 语言改变事件</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> LanguageEnum _currentLanguage; <span class="comment">// 当前语言</span></span><br><span class="line">    <span class="keyword">private</span> Dictionary&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt; _localizationDict; <span class="comment">// 键：文本标识，值：本地化文本</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> AndroidJavaClass _locale; <span class="comment">// 获取Java中的Locale类</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="built_in">string</span> LOCALIZATION_FILE_PATH = <span class="string">&quot;Localization/&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> LanguageEnum INSURANCE_LANG = LanguageEnum.English; <span class="comment">// 保底语言</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Dictionary&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt; INSURANCE_DICT;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LocalizationManager _instance;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span> &#123;</span><br><span class="line">        _instance = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">        INSURANCE_DICT = LoadDictionary(INSURANCE_LANG); <span class="comment">// 加载保底字典</span></span><br><span class="line"></span><br><span class="line">        _locale = <span class="keyword">new</span> AndroidJavaClass(<span class="string">&quot;java.util.Locale&quot;</span>);</span><br><span class="line">        _currentLanguage = MySystemLanguage;</span><br><span class="line">        _localizationDict = LoadDictionary(_currentLanguage); <span class="comment">// 加载字典</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 改变当前语言</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ChangeLanguage</span>(<span class="params">LanguageEnum language</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (language.Equals(_currentLanguage)) &#123; <span class="comment">// 此处不刷新，也可以强制刷新，也可以另写一个强制刷新的方法</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        _currentLanguage = language;</span><br><span class="line">        _localizationDict = LoadDictionary(language);</span><br><span class="line"></span><br><span class="line">        OnLanguageChanged?.Invoke();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 加载语言的映射字典</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function">Dictionary&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt; <span class="title">LoadDictionary</span>(<span class="params">LanguageEnum language</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">string</span> path = LOCALIZATION_FILE_PATH + language.ToString();</span><br><span class="line">        LanguageData data;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            data = JsonUtil.LoadJsonFromResources&lt;LanguageData&gt;(path);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception ex) &#123; <span class="comment">// 如果失败则加载保险语言</span></span><br><span class="line">            Debug.LogWarning(<span class="string">$&quot;<span class="subst">&#123;ex.Message&#125;</span>, now using insurance language [<span class="subst">&#123;INSURANCE_LANG&#125;</span>].&quot;</span>);</span><br><span class="line">            data = JsonUtil.LoadJsonFromResources&lt;LanguageData&gt;(LOCALIZATION_FILE_PATH + INSURANCE_LANG.ToString());</span><br><span class="line">            _currentLanguage = INSURANCE_LANG;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> GenerateDict(data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 将JSON文件中的List数据转化成字典，因为此版本Unity不支持序列化字典</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Dictionary&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt; <span class="title">GenerateDict</span>(<span class="params">LanguageData languageData</span>)</span> &#123;</span><br><span class="line">        Dictionary&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt; dict = <span class="keyword">new</span> Dictionary&lt;<span class="built_in">string</span>, <span class="built_in">string</span>&gt;();</span><br><span class="line">        <span class="keyword">foreach</span> (LanguageDataItem item <span class="keyword">in</span> languageData.Datas) &#123;</span><br><span class="line">            dict.Add(item.key, item.<span class="keyword">value</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dict;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 获取本地化后的文本</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;key&quot;&gt;</span>文本标识<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">GetString</span>(<span class="params"><span class="built_in">string</span> key</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == key || <span class="number">0</span> == key.Length) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (_localizationDict.ContainsKey(key)) &#123;</span><br><span class="line">            <span class="keyword">return</span> _localizationDict[key];</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (INSURANCE_DICT.ContainsKey(key)) &#123;</span><br><span class="line">            Debug.LogWarning(<span class="string">$&quot;Cannot find key [<span class="subst">&#123;key&#125;</span>] in localizaitoin dictionary, now using insurance dictionary.&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> INSURANCE_DICT[key];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;<span class="comment">// 如果保底字典中也没有这个key，返回原值</span></span><br><span class="line">            Debug.LogWarning(<span class="string">$&quot;Cannot find key [<span class="subst">&#123;key&#125;</span>] in every dictionary, now just return key itseft.&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> key;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 获取系统语言</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">GetLanguage</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> _locale.CallStatic&lt;AndroidJavaObject&gt;(<span class="string">&quot;getDefault&quot;</span>).Call&lt;<span class="built_in">string</span>&gt;(<span class="string">&quot;getLanguage&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 获取系统国家</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">GetCountry</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> _locale.CallStatic&lt;AndroidJavaObject&gt;(<span class="string">&quot;getDefault&quot;</span>).Call&lt;<span class="built_in">string</span>&gt;(<span class="string">&quot;getCountry&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    LanguageEnum MySystemLanguage &#123;</span><br><span class="line">        <span class="keyword">get</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> UNITY_EDITOR</span></span><br><span class="line">            <span class="keyword">return</span> (LanguageEnum)Application.systemLanguage;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> <span class="keyword">warning</span> disable CS0162 // Unreachable code detected</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> UNITY_ANDROID</span></span><br><span class="line">            LanguageEnum sysLang = LanguageEnum.Unknown;</span><br><span class="line">            <span class="keyword">if</span> (Application.platform == RuntimePlatform.Android) &#123;</span><br><span class="line">                <span class="built_in">string</span> lang = GetLanguage();</span><br><span class="line">                <span class="keyword">switch</span> (lang) &#123;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&quot;af&quot;</span>:</span><br><span class="line">                        sysLang = LanguageEnum.Afrikaans;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="comment">// 此处省略...</span></span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&quot;zh&quot;</span>:</span><br><span class="line">                        <span class="keyword">switch</span> (GetCountry()) &#123;</span><br><span class="line">                            <span class="keyword">case</span> <span class="string">&quot;TW&quot;</span>:</span><br><span class="line">                                sysLang = LanguageEnum.ChineseTW;</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                            <span class="keyword">case</span> <span class="string">&quot;HK&quot;</span>:</span><br><span class="line">                                sysLang = LanguageEnum.ChineseHK;</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                            <span class="literal">default</span>:</span><br><span class="line">                                sysLang = LanguageEnum.ChineseSimplified;</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&quot;de&quot;</span>:</span><br><span class="line">                        <span class="keyword">if</span> (GetCountry() == <span class="string">&quot;LU&quot;</span>)</span><br><span class="line">                            sysLang = LanguageEnum.Luxembourgish;</span><br><span class="line">                        <span class="keyword">else</span></span><br><span class="line">                            sysLang = LanguageEnum.German;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> sysLang;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> <span class="keyword">warning</span> restore CS0162</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">enum</span> LanguageEnum &#123; <span class="comment">// 来自 UnityEngine.SystemLanguage</span></span><br><span class="line">        Afrikaans = <span class="number">0</span>,</span><br><span class="line">        Arabic = <span class="number">1</span>,</span><br><span class="line">        Basque = <span class="number">2</span>,</span><br><span class="line">        <span class="comment">// 此处省略...</span></span><br><span class="line">        Luxembourgish = <span class="number">48</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>（这一大段你就直接放这里了？）</p>
+<p>懒且菜…以后要是我懂的多了，就能轻松洞察本质提取重点了，现在就暂时先当一个代码备份吧…</p>
+<h4 id="成员"><a href="#成员" class="headerlink" title="成员"></a>成员</h4><ul>
+<li>_instance，Instance：单例对象。</li>
+<li>_currentLanguage：记录当前使用的语言</li>
+<li>_localizationDict：存储本地化文本的键值对；键：文本标识，值：本地化文本</li>
+<li>_locale：获取Java中的Locale类，用于获取安卓系统中的语言和地区</li>
+<li>INSURANCE_LANG：保底语言，当系统语言不被支持或_currentLanguage被赋予异常值无法正常加载时，使用此语言。稍微增加那么一点鲁棒性。</li>
+<li>INSURANCE_DICT：保底语言对应的本地化文本键值对</li>
+<li>LOCALIZATION_FILE_PATH：存储本地化文件的路径前缀</li>
+<li>OnLanguageChanged：语言改变事件。供本地化器订阅，当前语言改变时触发。</li>
+<li>LanguageEnum：语言枚举类。这段LanguageEnum和MySystemLanguage是直接拿别人的。查了下基本上全部来自UnityEngine.SystemLanguage，不直接引用而自己另写一个，应该是便于修改，使用上更灵活吧。</li>
+<li>MySystemLanguage：当前系统语言。<ul>
+<li>如果是在Unity Editor中运行的话，直接从Application中获取系统语言。</li>
+<li>如果在Android系统中，则使用_locale获取系统语言编号，通过switch语句返回对应的枚举类。</li>
+<li>switch写起来感觉有点麻烦，本质就是需要建立一个string到Enum的键值映射，有想过通过Enum.Parse来做，但Enum那边改动有点大，暂时没试。不过反正不是我写的，switch本质上也是O(1)的Hash，就先这样吧。</li>
+<li>这里的语言缩写，查了下应该使用的是ISO 639-1 Code 规范，可参考：<a target="_blank" rel="noopener" href="http://www.loc.gov/standards/iso639-2/php/code_list.php">ISO 639-1 Code</a>。</li>
+</ul>
+</li>
+</ul>
+<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><ul>
+<li>Awake：实例化时触发一次。<ul>
+<li>单例赋值</li>
+<li>获取当前系统语言</li>
+<li>填充系统语言和保底语言的字典。先于各本地化器Start中的调用。</li>
+</ul>
+</li>
+<li>ChangeLanguage：更改语言方法。<ul>
+<li>维护_currentLanguage变量</li>
+<li>重新加载当前语言字典</li>
+<li>触发语言改变事件。</li>
+<li>这里先判断了下当前语言和更改的目标语言是否是同一种，是的话就不做操作了；本意是提高效率，不加也行，考虑可能有强制reload的需求；同时考虑这两种场景的话，可以重载一下，在参数列表里加个bool变量来控制是否判断。</li>
+</ul>
+</li>
+<li>LoadDictionary：加载系统语言字典方法。<ul>
+<li>如果途中除了什么问题的话，比如本地化文件找不到或格式有误，则加载保底语言的字典。</li>
+<li>如果保底字典也加载失败的话，就没什么办法了。</li>
+<li>加载json实际使用的是 UnityEngine.JsonUtility.FromJson<T>(string json)</li>
+</ul>
+</li>
+<li>GenerateDict：字典转换方法。将pojo转Dictionary</li>
+<li>GetString：获取本地化文本方法。<ul>
+<li>首先在当前语言字典中寻找键对应的本地化文本，找到则返回</li>
+<li>如果没找到，则在保底语言字典中寻找</li>
+<li>如果在保底语言字典中也没有此键，则记录异常，直接返回键本身</li>
+</ul>
+</li>
+<li>GetLanguage和GetCountry：通过Java中的Locale类，获取当前系统语言和地区</li>
+</ul>
+<h2 id="使用例"><a href="#使用例" class="headerlink" title="使用例"></a>使用例</h2><p>在场景中添加两个空物体，分别添加LocalizationManager脚本和LocalizationTest脚本。</p>
+<p>新建画布，添加一个Text控件和Component控件。</p>
+<p>层次结构如下</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E7%89%A9%E4%BD%93%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png" alt="物体层次结构"></p>
+<p>LocalizationTest脚本如下</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">LocalizationTest</span> : <span class="title">MonoBehaviour</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> LocalizationManager _localMgr;</span><br><span class="line">    <span class="keyword">private</span> LocalizationManager.LanguageEnum en;</span><br><span class="line">    <span class="keyword">private</span> LocalizationManager.LanguageEnum zh;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span> &#123;</span><br><span class="line">        _localMgr = LocalizationManager.Instance;</span><br><span class="line">        en = LocalizationManager.LanguageEnum.English;</span><br><span class="line">        zh = LocalizationManager.LanguageEnum.ChineseSimplified;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ChangeLang</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (_localMgr.CurrentLanguage.Equals(en)) &#123;</span><br><span class="line">            _localMgr.ChangeLanguage(zh);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            _localMgr.ChangeLanguage(en);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为按钮绑定ChangeLang方法。</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E7%BB%91%E5%AE%9AChangeLang%E6%96%B9%E6%B3%95.png" alt="绑定ChangeLang方法"></p>
+<p>为Text控件和Button下的Text控件添加TextLocalizationer组件，并填写Text文本键</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E6%B7%BB%E5%8A%A0TextLocalizationer%E7%BB%84%E4%BB%B61.png" alt="添加TextLocalizationer组件1"></p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E6%B7%BB%E5%8A%A0TextLocalizationer%E7%BB%84%E4%BB%B62.png" alt="添加TextLocalizationer组件2"></p>
+<p>在Resources文件夹中新建Localization路径，放入English.json和ChineseSimplified.json</p>
+<p>English.json</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;Datas&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;_btn_change_lang&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Change Language&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;_text_test&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Test&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>ChineseSimplified.json</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;Datas&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;_btn_change_lang&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;变更语言&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;_text_test&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;测试&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>运行效果如下</p>
+<p>运行后读电脑的系统语言，加载中文</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E8%BF%90%E8%A1%8C%E6%95%88%E6%9E%9C1.png" alt="运行效果1"></p>
+<p>点击按钮可在两种语言间轮流切换</p>
+<p><img src="https://cdn.staticaly.com/gh/MPasser/ImgStorage/master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/%E8%BF%90%E8%A1%8C%E6%95%88%E6%9E%9C2.png" alt="运行效果2"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/" rel="prev" title="一种有限状态机的简单实现">
+      <i class="fa fa-chevron-left"></i> 一种有限状态机的简单实现
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Unity/QFramework-Architecture%E5%88%9D%E5%A7%8B%E5%8C%96/" rel="next" title="QFramework-Architecture初始化">
+      QFramework-Architecture初始化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#json%E6%96%87%E4%BB%B6%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.1.</span> <span class="nav-text">json文件示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pojo%E7%B1%BB"><span class="nav-number">3.2.</span> <span class="nav-text">pojo类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%8C%96%E5%99%A8"><span class="nav-number">3.3.</span> <span class="nav-text">本地化器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%AE%A1%E7%90%86%E5%99%A8"><span class="nav-number">3.4.</span> <span class="nav-text">本地化管理器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%90%E5%91%98"><span class="nav-number">3.4.1.</span> <span class="nav-text">成员</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">3.4.2.</span> <span class="nav-text">方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">使用例</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MPasser</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://mpasser.github.io/note/" title="Home → https:&#x2F;&#x2F;mpasser.github.io&#x2F;note&#x2F;"><i class="fa fa-home fa-fw"></i>Home</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/21327295" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;21327295" rel="noopener" target="_blank"><i class="fa fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/MPasser" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MPasser" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MPasser</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

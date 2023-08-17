@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="mask-icon" href="/images/Book_and_Quill_JE2_BE2.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="大数据场景处理技巧 哈希函数可以把数据按照种类均匀分流 布隆过滤器用于集合的建立与查询，并可以节省大量空间 一致性哈希解决数据服务器的负载管理问题 利用并查集结构做岛问题的并行计算 位图解决某一范围上数字的出现情况，并可以节省大量空间 利用分段统计思想，并进一步节省空间 利用堆、外排序来做多个处理单元的结果合并  哈希分流Hash() % max结果会在0 ~ max-1间均匀分布，由此可以做负载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大数据场景处理技巧">
+<meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%9C%BA%E6%99%AF%E5%A4%84%E7%90%86%E6%8A%80%E5%B7%A7/index.html">
+<meta property="og:site_name" content="MPasser&#39;s blog">
+<meta property="og:description" content="大数据场景处理技巧 哈希函数可以把数据按照种类均匀分流 布隆过滤器用于集合的建立与查询，并可以节省大量空间 一致性哈希解决数据服务器的负载管理问题 利用并查集结构做岛问题的并行计算 位图解决某一范围上数字的出现情况，并可以节省大量空间 利用分段统计思想，并进一步节省空间 利用堆、外排序来做多个处理单元的结果合并  哈希分流Hash() % max结果会在0 ~ max-1间均匀分布，由此可以做负载">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-17T04:19:34.013Z">
+<meta property="article:author" content="MPasser">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%9C%BA%E6%99%AF%E5%A4%84%E7%90%86%E6%8A%80%E5%B7%A7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>大数据场景处理技巧 | MPasser's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MPasser's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%9C%BA%E6%99%AF%E5%A4%84%E7%90%86%E6%8A%80%E5%B7%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          大数据场景处理技巧
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-05 00:00:00" itemprop="dateCreated datePublished" datetime="2022-05-05T00:00:00+08:00">2022-05-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-17 12:19:34" itemprop="dateModified" datetime="2023-08-17T12:19:34+08:00">2023-08-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="大数据场景处理技巧"><a href="#大数据场景处理技巧" class="headerlink" title="大数据场景处理技巧"></a>大数据场景处理技巧</h2><ul>
+<li>哈希函数可以把数据按照种类均匀分流</li>
+<li>布隆过滤器用于集合的建立与查询，并可以节省大量空间</li>
+<li>一致性哈希解决数据服务器的负载管理问题</li>
+<li>利用并查集结构做岛问题的并行计算</li>
+<li>位图解决某一范围上数字的出现情况，并可以节省大量空间</li>
+<li>利用分段统计思想，并进一步节省空间</li>
+<li>利用堆、外排序来做多个处理单元的结果合并</li>
+</ul>
+<h2 id="哈希分流"><a href="#哈希分流" class="headerlink" title="哈希分流"></a>哈希分流</h2><p>Hash() % max结果会在0 ~ max-1间均匀分布，由此可以做负载均衡。</p>
+<p>例：<br>假设有0~42亿(2^32-1)个整数，如何求出其中出现次数最多的数字。</p>
+<p>解：<br>直接用哈希表的话，至少需要32G的空间。</p>
+<p>解：</p>
+<ol>
+<li>设置100个文件，并且编号。  </li>
+<li>对于每个整数计算哈希值，对100取模，记录在编号相同的文件中。相同的数字计算出得到哈希值相同，故必然在同一个文件。</li>
+<li>对每个文件中的数字再用哈希表记录出现次数，求出出现次数最多的数字。</li>
+</ol>
+<p>如此内存的花销就能缩小100倍。</p>
+<h2 id="布隆过滤器"><a href="#布隆过滤器" class="headerlink" title="布隆过滤器"></a>布隆过滤器</h2><p>两种常用场景：巨大的url黑名单 和 爬虫访问url去重。</p>
+<h3 id="位图"><a href="#位图" class="headerlink" title="位图"></a>位图</h3><p>布隆过滤器需要使用位图。<br>位图就是 bit[]，bit类型数据的数组。但是没有直接的，所以可以用int数组间接实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span>[] arr = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">10</span>]; <span class="comment">// 可以表示320个bit</span></span><br><span class="line"><span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">178</span>; <span class="comment">// 想取得第178位bit的状态</span></span><br><span class="line"><span class="type">int</span> <span class="variable">numberIndex</span> <span class="operator">=</span> <span class="number">178</span>/<span class="number">32</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">bitIndex</span> <span class="operator">=</span> <span class="number">178</span>%<span class="number">32</span>;</span><br><span class="line"><span class="comment">// 获取第178位bit的状态</span></span><br><span class="line"><span class="type">int</span> <span class="variable">s</span> <span class="operator">=</span> (arr[numberIndex] &gt;&gt; bitIndex) &amp; <span class="number">1</span>;</span><br><span class="line"><span class="comment">// 将第178位bit状态设置为1</span></span><br><span class="line">arr[numberIndex] = arr[numberIndex] | (<span class="number">1</span> &lt;&lt; bitIndex);</span><br><span class="line"><span class="comment">// 将第178位bit状态设置为0</span></span><br><span class="line">arr[numberIndex] = arr[numberIndex] &amp; (~(<span class="number">1</span> &lt;&lt; bitIndex));</span><br></pre></td></tr></table></figure>
+
+<p>例：<br>32位无符号整数的范围是0~4294967295(2^32-1)，现在有一个正好包含40亿个无符号整数的文件，所以在整个范围中必然存在没出现过的数。可以使用最多1GB的内存，怎么找到所有未出现过的数。</p>
+<p>解：位图<br>准备一个长度为2^32-1的数组，遍历这40亿个数字，为数组元素做标记，则没标记过的就是未出现过的数。<br>2^32-1bit -&gt; (2^32-1)&#x2F;8 Byte -&gt; 2^29 Byte -&gt; 2^19 KB -&gt; 2^9 MB -&gt; 512M</p>
+<p>例：<br>上例中，规定最多可以使用3KB的内存，只需要找到一个未出现过的数字，如何找到。</p>
+<p>解：范围统计</p>
+<ul>
+<li>设置一个长度为512的整数数组，用于计数。2^32&#x2F;512&#x3D;2^23&#x3D;8388608  </li>
+<li>0至8388607范围内的数字每出现一次，int[0]增加1；8388608至16777216范围内的数每出现一次，int[1]增加1；以此类推。</li>
+<li>计数数组中，必然有一个元素值未达到8388608，如此就确定了缺少数字的范围。</li>
+<li>然后在这个数字返回内，重新设置长度为512的整数数组，用于计数。2^23&#x2F;512&#x3D;2^14&#x3D;16384</li>
+<li>再次计数。不断缩小范围，直至找到一个词频为0的数字。</li>
+</ul>
+<p>int[512]的内存消耗。4Byte*512&#x3D;2048Byte&lt;3KB</p>
+<p>例：32位无符号整数的范围是0~4294967295(2^32-1)，现在有一个正好包含40亿个无符号整数。可以使用最多1GB的内存，怎么找到所有出现过2次的数。</p>
+<p>解：哈希分流，计算词频</p>
+<p>解：位图</p>
+<p>使用2bit表示一个数字出现的词频，00表示未出现，01表示出现1次，10表示出现2次，11表示出现2次以上。</p>
+<p>例：<br>上例中，可以使用最多10MB的内存，如何找到这40亿个整数的中位数。</p>
+<p>解：范围统计</p>
+<ul>
+<li>设置一个长度为512的整数数组，用于计数。2^32&#x2F;512&#x3D;2^23&#x3D;8388608  </li>
+<li>0至8388607范围内的数字每出现一次，int[0]增加1；8388608至16777216范围内的数每出现一次，int[1]增加1；以此类推。</li>
+<li>中位数也就是40亿个数中的第20亿个数字，根据词频统计数组，就能够确定中位数在哪一个范围。</li>
+<li>然后在这个数字返回内，重新设置词频数组。</li>
+<li>再次计数。不断缩小范围，直至找到第20亿个数字，即中位数。</li>
+</ul>
+<h3 id="布隆过滤器原理"><a href="#布隆过滤器原理" class="headerlink" title="布隆过滤器原理"></a>布隆过滤器原理</h3><p>例：<br>假设黑名单中有100亿条url，每条url占64Byte，用户访问网站时，若url在黑名单内则不允许访问。</p>
+<p>解：<br>设置一个很大的位图，假设长度为m。</p>
+<ol>
+<li>黑名单中的url通过第一个哈希函数，计算出哈希值，对m取模，位图对应位置置1。</li>
+<li>共有k个哈希函数，全部按照步骤1的操作，对位图的k个位置置1。（重复的保持为1）。</li>
+<li>查询时，对url经过k个哈希函数的计算取模后，得到的k个位置，在位图上全都是1时，认为此url在黑名单中。</li>
+</ol>
+<p>布隆过滤器必定有误差，可能会将不在黑名单中的url，认为在黑名单中。<br>位图大小m尽可能设置大，哈希函数k选择合适的数量，可减少失误率。</p>
+<p>设 样本量为n ，失误率为p 。则合适的位图大小公式为：  </p>
+<p>$m&#x3D;\frac{n*lnp}{(ln2)^{2}}$</p>
+<p>向上取整。</p>
+<p>根据理论的m和n，算出需要的哈希函数个数：</p>
+<p>$k&#x3D;ln2<em>\frac mn \approx 0.7</em>\frac mn$</p>
+<p>向上取整。</p>
+<p>$p_{实际}&#x3D;(1-e^{-\frac{n*k_{实际}}{m_{实际}}})^{k_{实际}}$</p>
+<h2 id="一致性哈希"><a href="#一致性哈希" class="headerlink" title="一致性哈希"></a>一致性哈希</h2><p>是一种特殊的哈希算法，目的是解决分布式缓存的问题。</p>
+<p>首先，对存储节点的哈希值进行计算，其将存储空间抽象为一个环，将存储节点配置到环上。环上所有的节点都有一个值。其次，对数据进行哈希计算，按顺时针方向将其映射到离其最近的节点上去。当有节点出现故障离线时，按照算法的映射方法，受影响的仅仅为环上故障节点开始逆时针方向至下一个节点之间区间的数据对象，而这些对象本身就是映射到故障节点之上的。当有节点增加时，比如，在节点A和B之间重新添加一个节点H，受影响的也仅仅是节点H逆时针遍历直到B之间的数据对象，将这些重新映射到H上即可，因此，当有节点出现变动时，<strong>不会使得整个存储空间上的数据都进行重新映射</strong>，解决了简单哈希算法增删节点，重新映射所有数据带来的效率低下的问题。</p>
+<p>当把服务器映射到hash环上的时候，如果服务器数量很少，很有可能出现hash环偏斜的情况，当hash环偏斜以后，缓存往往会极度不均衡的分布在各服务器上。将现有的物理节点通过虚拟的方法复制出来，这些由实际节点虚拟复制而来的节点被称为”虚拟节点”。加入虚拟节点数量很多以后，hash环上节点的分布就是均匀的了。</p>
+<h2 id="利用堆排序"><a href="#利用堆排序" class="headerlink" title="利用堆排序"></a>利用堆排序</h2><p>例：<br>某搜索公司一天的用户搜索词汇是百亿级别的数据量，请设计一种求出每天热门Top100词汇的可行办法。</p>
+<p>解：堆上加堆，二维堆</p>
+<ol>
+<li>利用哈希分流，将搜索词汇和对应词频分流到多个服务器（或区域），每个区域的词汇，根据词频大小组成大根堆。  </li>
+<li>取每个区域的堆顶元素，组织成一个总的大根堆。</li>
+<li>取出总堆的堆顶元素，即为全局最大值。</li>
+<li>取出的元素来自于哪个堆，则再将这个堆的堆顶元素加入到总堆中。</li>
+<li>重复步骤3-4，直至取出100个元素。</li>
+</ol>
+<p>例：<br>有10亿个无符号整数0~4294967295(2^32-1)，最多使用5G内存，对这10亿个整数排序。</p>
+<p>解：大小限定的堆</p>
+<ul>
+<li>根据内存大小设置使用堆的大小。大根堆。</li>
+<li>堆内元素结构存储 [数字,词频] ，根据数字大小排序。</li>
+<li>遍历这10亿个数字，数字小于堆顶元素的加入堆，堆如果满了则弹出。</li>
+<li>如此找到全局最小的一些数字，输出到结果文件中。</li>
+<li>重复遍历10亿个数字，直至排序完成。</li>
+<li>之后的遍历，需要记录阈值，忽略之前已排序过的数字。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E7%BA%A6%E7%91%9F%E5%A4%AB%E7%8E%AF/" rel="prev" title="约瑟夫环">
+      <i class="fa fa-chevron-left"></i> 约瑟夫环
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Java/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80%E3%80%81%E7%BA%BF%E7%A8%8B%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B1%E4%BA%AB%E5%92%8C%E5%8D%8F%E4%BD%9C/" rel="next" title="线程基础、线程之间的共享和协作">
+      线程基础、线程之间的共享和协作 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%9C%BA%E6%99%AF%E5%A4%84%E7%90%86%E6%8A%80%E5%B7%A7"><span class="nav-number">1.</span> <span class="nav-text">大数据场景处理技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E5%88%86%E6%B5%81"><span class="nav-number">2.</span> <span class="nav-text">哈希分流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">布隆过滤器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E5%9B%BE"><span class="nav-number">3.1.</span> <span class="nav-text">位图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E5%8E%9F%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">布隆过滤器原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C"><span class="nav-number">4.</span> <span class="nav-text">一致性哈希</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="nav-number">5.</span> <span class="nav-text">利用堆排序</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MPasser</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://mpasser.github.io/note/" title="Home → https:&#x2F;&#x2F;mpasser.github.io&#x2F;note&#x2F;"><i class="fa fa-home fa-fw"></i>Home</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/21327295" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;21327295" rel="noopener" target="_blank"><i class="fa fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/MPasser" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MPasser" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MPasser</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

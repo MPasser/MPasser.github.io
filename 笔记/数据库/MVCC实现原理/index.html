@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Book_and_Quill_JE2_BE2.png">
+  <link rel="mask-icon" href="/images/Book_and_Quill_JE2_BE2.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="简述Multi-Version Concurrency Control，多版本并发控制。一般是用在数据库管理系统中。 实现MVCC的实现主要依赖于记录中的三个隐藏字段、undolog和read view来实现的。 隐藏字段">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MVCC实现原理">
+<meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E6%95%B0%E6%8D%AE%E5%BA%93/MVCC%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="MPasser&#39;s blog">
+<meta property="og:description" content="简述Multi-Version Concurrency Control，多版本并发控制。一般是用在数据库管理系统中。 实现MVCC的实现主要依赖于记录中的三个隐藏字段、undolog和read view来实现的。 隐藏字段">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-17T04:19:34.017Z">
+<meta property="article:author" content="MPasser">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E6%95%B0%E6%8D%AE%E5%BA%93/MVCC%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MVCC实现原理 | MPasser's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MPasser's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E6%95%B0%E6%8D%AE%E5%BA%93/MVCC%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MVCC实现原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-09-29 00:00:00" itemprop="dateCreated datePublished" datetime="2022-09-29T00:00:00+08:00">2022-09-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-17 12:19:34" itemprop="dateModified" datetime="2023-08-17T12:19:34+08:00">2023-08-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h2><p>Multi-Version Concurrency Control，多版本并发控制。一般是用在数据库管理系统中。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>MVCC的实现主要依赖于记录中的三个隐藏字段、undolog和read view来实现的。</p>
+<h3 id="隐藏字段"><a href="#隐藏字段" class="headerlink" title="隐藏字段"></a>隐藏字段</h3><p>每条记录都有数据库隐式定义的字段</p>
+<ul>
+<li>DB_TRX_PTR，最新事务ID，记录最近修改该记录的事务ID</li>
+<li>DB_ROLL_PTR，回滚指针，指向该记录的上一个版本，配合undo log使用</li>
+<li>DB_ROW_ID，隐藏主键，数据表若为显式声明主键，实际使用此主键</li>
+</ul>
+<h3 id="undo-log"><a href="#undo-log" class="headerlink" title="undo log"></a>undo log</h3><p>回滚日志，在进行增删改操作是产生方便的回滚日志。</p>
+<p>insert操作产生的undo log只在事务回滚时需要，事务提交后可立刻丢弃；<br>update和delete操作产生的undo log不仅回滚时需要，快照读时也需要。</p>
+<p>只有在快照读或事务回滚不涉及该日志是，对应日志才会被purge线程清除（先标记，后统一清楚）</p>
+<h4 id="例"><a href="#例" class="headerlink" title="例"></a>例</h4><p>假设有编号为1的事务，向表中插入一条记录，那么插入后行数据状态为：</p>
+<table>
+<thead>
+<tr>
+<th align="center">name</th>
+<th align="center">age</th>
+<th align="center">DB_ROW_ID</th>
+<th align="center">DB_TRX_ID</th>
+<th align="center">DB_ROLL_PTR</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Adam</td>
+<td align="center">15</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">null</td>
+</tr>
+</tbody></table>
+<p>若此时有编号为2的事务，对记录的name做出修改</p>
+<ul>
+<li>在事务2修改记录时，数据库对该行加排它锁</li>
+<li>把数据拷贝到undo log中，作为旧记录（副本）</li>
+<li>拷贝完成后，修改该行为新值，且修改隐藏事务ID字段，回滚指针指向拷贝到undo log的副本记录中</li>
+<li>事务提交后，释放锁</li>
+</ul>
+<p>事务2完成后：</p>
+<table>
+<thead>
+<tr>
+<th align="center">name</th>
+<th align="center">age</th>
+<th align="center">DB_ROW_ID</th>
+<th align="center">DB_TRX_ID</th>
+<th align="center">DB_ROLL_PTR</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Bob</td>
+<td align="center">7</td>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center">0x1145141919810</td>
+</tr>
+</tbody></table>
+<p>undo log的内容（0x1145141919810位置）：</p>
+<table>
+<thead>
+<tr>
+<th align="center">name</th>
+<th align="center">age</th>
+<th align="center">DB_ROW_ID</th>
+<th align="center">DB_TRX_ID</th>
+<th align="center">DB_ROLL_PTR</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Adam</td>
+<td align="center">15</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">null</td>
+</tr>
+</tbody></table>
+<h3 id="Read-View"><a href="#Read-View" class="headerlink" title="Read View"></a>Read View</h3><p>Read View是事务进行快照读操作时生产的读视图，即在事务执行快照读时，生成一个数据系统当前的快照，记录并维护当前活跃事务的ID，事务ID值是递增的</p>
+<p>Read View的最大作用是做可见性判断，即当某个事务在执行快照读时，对该记录创建一个Read View视图，将其当做条件判断当前事务能够看到哪个版本的数据，可能最新，也可能是undo log中某个版本的数据</p>
+<p>算法的逻辑是将记录的最新事务ID（DB_TRX_PTR）取出，与当前其他活跃事务的ID对比，若不符合可见性，则通过DB_ROLL_PTR回滚指针取undo log中的上一个DB_TRX_PTR比较，直至符合可见性。最终拿到的记录就是<strong>当前事务能看到的最新版本数据</strong></p>
+<h4 id="可见性规则"><a href="#可见性规则" class="headerlink" title="可见性规则"></a>可见性规则</h4><p>首先需要了解Read View中的三个全局属性：</p>
+<ul>
+<li>trx_list：一个数值列表，用于维护Read View生成时刻系统正活跃的事务ID</li>
+<li>up_limit_id：记录trx_list列表中最小的事务ID</li>
+<li>low_limit_id：Read View生成时系统尚未分配的下一个事务ID</li>
+</ul>
+<p>具体比较规则如下：</p>
+<ol>
+<li>若DB_TRX_ID &lt; up_limit_id，则当前事务能看到DB_TRX_ID所在记录；否则下一步</li>
+<li>若DB_TRX_ID &gt;&#x3D; low_limit_id，代表DB_TRX_ID所在记录在Read View之后生成，那么对当前事务肯定不可见；否则下一步</li>
+<li>判断DB_TRX_ID是否在trx_list中，若在，则表示生成Read View时该事务还是活跃状态没有commit，当前事务看不到结果；若不在，则说明事务在Read View生成前就已commit，结果可见</li>
+</ol>
+<h4 id="例-1"><a href="#例-1" class="headerlink" title="例"></a>例</h4><p>假设有四个事务同事执行，如下图：</p>
+<table>
+<thead>
+<tr>
+<th align="left">事务1</th>
+<th align="left">事务2</th>
+<th align="left">事务3</th>
+<th align="left">事务4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">事务开始</td>
+<td align="left">事务开始</td>
+<td align="left">事务开始</td>
+<td align="left">事务开始</td>
+</tr>
+<tr>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left">修改且已提交</td>
+</tr>
+<tr>
+<td align="left">进行中</td>
+<td align="left">快照读</td>
+<td align="left">进行中</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<p>表中看到事务2进行了快照读，数据库为该行数据生成一个ReadView视图。</p>
+<p>事务1和3还在活跃状态，事务4在事务2快照读前已提交，故Read View属性：</p>
+<ul>
+<li>trx_list：1,2,3</li>
+<li>up_limit_id：1</li>
+<li>low_limit_id：5</li>
+</ul>
+<h2 id="与隔离级别的关系"><a href="#与隔离级别的关系" class="headerlink" title="与隔离级别的关系"></a>与隔离级别的关系</h2><p>因为Read View生成的时机不同，从而造成RC、RR级别下快照读的不同</p>
+<ul>
+<li>RR（Repeatable Read）级别下，事务对记录的第一次快照读，会创建一个Read View，此后再次调用快照读时，仍然使用第一次的Read View。  </li>
+<li>故当前事务中，若在其他事务commit前调用快照读，之后Read View就不变了，其他事务commit的结果在当前事务便不可见。因此可能出现幻读。反之，早于Read View生成时提交的事务，其作出的修改是可见的。</li>
+<li>RC（Read Commit）级别下，每次快照读都会新生成一个快照和Read View，故在同一事务中可看到其他事务提交所做的修改。</li>
+</ul>
+<blockquote>
+<p>若想在RR级别下完全避免幻读，需要配合使用next-key locks，它由record locks（索引加锁）和 gap locks组成。gap locks间隙锁，不仅锁住需要使用的数据，还会锁住数据之间的间隙，相当于范围查询时将整个区间锁住了。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Java/Others/Maven%E4%B8%AD%E7%9A%84type%E6%A0%87%E7%AD%BE/" rel="prev" title="Maven中的type标签">
+      <i class="fa fa-chevron-left"></i> Maven中的type标签
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/" rel="next" title="一种有限状态机的简单实现">
+      一种有限状态机的简单实现 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">简述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E5%AD%97%E6%AE%B5"><span class="nav-number">2.1.</span> <span class="nav-text">隐藏字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undo-log"><span class="nav-number">2.2.</span> <span class="nav-text">undo log</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BE%8B"><span class="nav-number">2.2.1.</span> <span class="nav-text">例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Read-View"><span class="nav-number">2.3.</span> <span class="nav-text">Read View</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E8%A7%81%E6%80%A7%E8%A7%84%E5%88%99"><span class="nav-number">2.3.1.</span> <span class="nav-text">可见性规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BE%8B-1"><span class="nav-number">2.3.2.</span> <span class="nav-text">例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">3.</span> <span class="nav-text">与隔离级别的关系</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MPasser</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://mpasser.github.io/note/" title="Home → https:&#x2F;&#x2F;mpasser.github.io&#x2F;note&#x2F;"><i class="fa fa-home fa-fw"></i>Home</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/21327295" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;21327295" rel="noopener" target="_blank"><i class="fa fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/MPasser" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MPasser" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MPasser</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
