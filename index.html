@@ -183,6 +183,261 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/DOTween%E5%81%9C%E6%AD%A2%E5%8A%A8%E7%94%BB%E5%AF%B9%E5%9B%9E%E8%B0%83%E7%9A%84%E5%BD%B1%E5%93%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AC%94%E8%AE%B0/Unity/DOTween%E5%81%9C%E6%AD%A2%E5%8A%A8%E7%94%BB%E5%AF%B9%E5%9B%9E%E8%B0%83%E7%9A%84%E5%BD%B1%E5%93%8D/" class="post-title-link" itemprop="url">DOTween停止动画对回调的影响</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-11-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-28T00:00:00+08:00">2023-11-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-11-29 09:42:45" itemprop="dateModified" datetime="2023-11-29T09:42:45+08:00">2023-11-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="DOTween停止动画对回调的影响"><a href="#DOTween停止动画对回调的影响" class="headerlink" title="DOTween停止动画对回调的影响"></a>DOTween停止动画对回调的影响</h2><p>DOTween中的回调，一般有OnComplete加在动画结束，以及Insert&#x2F;AppendCallback插在动画中间。OnStart也可添加回调，但停止动画时一般都已经执行，故不做讨论。</p>
+<p>DOTween的停止动画，可用Complete方法使动画立即播放完毕，也可用Kill方法使动画中断。</p>
+<p>以下是几种DOTween停止动画时，对回调方法执行情况影响的测试结果：</p>
+<ul>
+<li>DOTween.Complete(false) 方法会执行OnComplete回调，但不会执行AppendCallback中的方法</li>
+<li>DOTween.Complete(True) 方法会执行OnComplete回调，也会执行AppendCallback中的方法</li>
+<li>DOTween.Kill(false) 暴力停止，动画若未执行完，则其主体会留在当时所处状态。后面未执行到的任何回调也都不再执行</li>
+<li>DOTween.Kill(True) 方法会执行OnComplete回调，但不会执行AppendCallback中的方法</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/DOTween%E5%81%9C%E6%AD%A2%E5%8A%A8%E7%94%BB%E5%AF%B9%E5%9B%9E%E8%B0%83%E7%9A%84%E5%BD%B1%E5%93%8D/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E7%89%A9%E4%BD%93%E9%9D%A0%E8%BF%91%E5%B1%8F%E5%B9%95%E8%BE%B9%E7%BC%98%E6%97%B6%E9%80%8F%E6%98%8E%E6%95%88%E6%9E%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E7%89%A9%E4%BD%93%E9%9D%A0%E8%BF%91%E5%B1%8F%E5%B9%95%E8%BE%B9%E7%BC%98%E6%97%B6%E9%80%8F%E6%98%8E%E6%95%88%E6%9E%9C/" class="post-title-link" itemprop="url">Unity实现物体靠近屏幕边缘时透明效果</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-09-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-09-28T00:00:00+08:00">2023-09-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-11-29 09:42:45" itemprop="dateModified" datetime="2023-11-29T09:42:45+08:00">2023-11-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>应用场景和效果如下：</p>
+<p><img src="/" alt="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/笔记/Unity/Unity实现物体靠近屏幕边缘时透明效果/物体靠近屏幕边缘时变透明.gif"></p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>在Shader中使用UnityCG.cginc的内置函数ComputeScreenPos，计算片元所在的屏幕坐标，再根据屏幕坐标设置片元的透明度。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E7%89%A9%E4%BD%93%E9%9D%A0%E8%BF%91%E5%B1%8F%E5%B9%95%E8%BE%B9%E7%BC%98%E6%97%B6%E9%80%8F%E6%98%8E%E6%95%88%E6%9E%9C/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E5%8D%A1%E7%89%8C%E5%BC%AF%E6%9B%B2%E7%BF%BB%E8%BD%AC%E6%95%88%E6%9E%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E5%8D%A1%E7%89%8C%E5%BC%AF%E6%9B%B2%E7%BF%BB%E8%BD%AC%E6%95%88%E6%9E%9C/" class="post-title-link" itemprop="url">Unity实现卡牌弯曲翻转效果</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-31 00:00:00" itemprop="dateCreated datePublished" datetime="2023-08-31T00:00:00+08:00">2023-08-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-11-29 09:42:45" itemprop="dateModified" datetime="2023-11-29T09:42:45+08:00">2023-11-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>卡牌弯曲翻转的效果，预览：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E5%8D%A1%E7%89%8C%E5%BC%AF%E6%9B%B2%E7%BF%BB%E8%BD%AC%E6%95%88%E6%9E%9C/%E5%8D%A1%E7%89%8C%E5%BC%AF%E6%9B%B2%E7%BF%BB%E8%BD%AC%E6%95%88%E6%9E%9C.gif" alt="卡牌弯曲翻转效果.gif"></p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>运动分解成两部分，弯曲和翻转。弯曲的弧面使用Mesh Renderer手搓。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E5%8D%A1%E7%89%8C%E5%BC%AF%E6%9B%B2%E7%BF%BB%E8%BD%AC%E6%95%88%E6%9E%9C/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -214,7 +469,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-22 11:02:01" itemprop="dateModified" datetime="2023-08-22T11:02:01+08:00">2023-08-22</time>
+                <time title="修改时间：2023-11-29 09:42:45" itemprop="dateModified" datetime="2023-11-29T09:42:45+08:00">2023-11-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,7 +477,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a>
                 </span>
             </span>
 
@@ -297,7 +552,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-22 11:02:01" itemprop="dateModified" datetime="2023-08-22T11:02:01+08:00">2023-08-22</time>
+                <time title="修改时间：2023-11-29 09:42:45" itemprop="dateModified" datetime="2023-11-29T09:42:45+08:00">2023-11-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -306,10 +561,6 @@
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
                 </span>
             </span>
 
@@ -384,8 +635,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-22 11:02:01" itemprop="dateModified" datetime="2023-08-22T11:02:01+08:00">2023-08-22</time>
+                <time title="修改时间：2023-11-29 09:42:45" itemprop="dateModified" datetime="2023-11-29T09:42:45+08:00">2023-11-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GamePlay/" itemprop="url" rel="index"><span itemprop="name">GamePlay</span></a>
+                </span>
+            </span>
 
           
 
@@ -460,7 +720,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-22 11:02:01" itemprop="dateModified" datetime="2023-08-22T11:02:01+08:00">2023-08-22</time>
+                <time title="修改时间：2023-11-29 09:42:45" itemprop="dateModified" datetime="2023-11-29T09:42:45+08:00">2023-11-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -469,10 +729,6 @@
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
                 </span>
             </span>
 
@@ -549,7 +805,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-22 11:02:01" itemprop="dateModified" datetime="2023-08-22T11:02:01+08:00">2023-08-22</time>
+                <time title="修改时间：2023-11-29 09:42:45" itemprop="dateModified" datetime="2023-11-29T09:42:45+08:00">2023-11-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -558,10 +814,6 @@
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
                 </span>
             </span>
 
@@ -640,8 +892,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-22 11:02:01" itemprop="dateModified" datetime="2023-08-22T11:02:01+08:00">2023-08-22</time>
+                <time title="修改时间：2023-11-29 09:42:45" itemprop="dateModified" datetime="2023-11-29T09:42:45+08:00">2023-11-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Markdown/" itemprop="url" rel="index"><span itemprop="name">Markdown</span></a>
+                </span>
+            </span>
 
           
 
@@ -715,8 +976,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-22 11:02:01" itemprop="dateModified" datetime="2023-08-22T11:02:01+08:00">2023-08-22</time>
+                <time title="修改时间：2023-11-29 09:42:45" itemprop="dateModified" datetime="2023-11-29T09:42:45+08:00">2023-11-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/GamePlay/" itemprop="url" rel="index"><span itemprop="name">GamePlay</span></a>
+                </span>
+            </span>
 
           
 
@@ -735,269 +1005,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/%E7%AC%94%E8%AE%B0/Gameplay/Euchre%E6%B8%B8%E6%88%8F%E8%A7%84%E5%88%99/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/QFramework-Architecture%E5%88%9D%E5%A7%8B%E5%8C%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MPasser">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MPasser's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AC%94%E8%AE%B0/Unity/QFramework-Architecture%E5%88%9D%E5%A7%8B%E5%8C%96/" class="post-title-link" itemprop="url">QFramework-Architecture初始化</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-01-18 00:00:00" itemprop="dateCreated datePublished" datetime="2023-01-18T00:00:00+08:00">2023-01-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-22 11:02:01" itemprop="dateModified" datetime="2023-08-22T11:02:01+08:00">2023-08-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a target="_blank" rel="noopener" href="https://github.com/liangxiegame/QFramework">QFramework</a>是提供一套简单、强大、易上手、符合 SOLID 原则、支持领域驱动设计（DDD）、事件驱动、数据驱动、分层、MVC 、CQRS、模块化、易扩展的架构，她的源码只有不到 800 行，完全可以把她放在笔记应用里保存。</p>
-<p>读源码时发现了一些有趣的设计，简单做一下记录。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><h3 id="Architecture组件"><a href="#Architecture组件" class="headerlink" title="Architecture组件"></a>Architecture组件</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/QFramework-Architecture%E5%88%9D%E5%A7%8B%E5%8C%96/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MPasser">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MPasser's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/" class="post-title-link" itemprop="url">一种文本本地化的实现思路</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-01-10 00:00:00" itemprop="dateCreated datePublished" datetime="2023-01-10T00:00:00+08:00">2023-01-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-22 11:02:01" itemprop="dateModified" datetime="2023-08-22T11:02:01+08:00">2023-08-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本地化，就是工程中的文本能支持多种语言，能根据系统信息或手动设置自动变成不同语言。</p>
-<p>在网上找了好些方案，找到了一种感觉最简单的，但又觉得有点憨，维护成本有点高的。但总之还能用，就简单做下记录，高级方案以后再看看吧。</p>
-<p>游戏引擎使用Unity，语言使用C#</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%96%87%E6%9C%AC%E6%9C%AC%E5%9C%B0%E5%8C%96%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MPasser">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MPasser's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">一种有限状态机的简单实现</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-01-05 00:00:00" itemprop="dateCreated datePublished" datetime="2023-01-05T00:00:00+08:00">2023-01-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-22 11:02:01" itemprop="dateModified" datetime="2023-08-22T11:02:01+08:00">2023-08-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有限状态机的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E6%9C%BA/2850046?fromtitle=%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA">百度百科链接</a>。</p>
-<p>实际没有太深入地研究，接触到这个的原因，是项目里需要将游戏的不同阶段分隔，方便流程控制。在此基本只是记录一种有限状态机的简单实现，游戏引擎使用Unity，语言使用C#。原代码来自同事，做了一点修改。</p>
-<p>感觉这个实现太朴实无华了，用的就是方法间调用，只是加了一个类统一管理。想象当中可能不适合状态复杂的场景，但当前只是用在了小型棋牌类游戏的流程控制，暂时没感受到明显的局限性。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/%E4%B8%80%E7%A7%8D%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1086,20 +1093,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-count">66</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1113,6 +1120,9 @@
       </span>
       <span class="links-of-author-item">
         <a href="https://github.com/MPasser" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MPasser" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ressap2018@163.com" title="E-Mail → mailto:ressap2018@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
       </span>
   </div>
 
