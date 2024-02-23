@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Jump%20Input%20Buffering%201.gif">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Jump%20Input%20Buffering%202.gif">
 <meta property="article:published_time" content="2023-11-29T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-02-18T01:12:55.847Z">
+<meta property="article:modified_time" content="2024-02-23T10:28:17.233Z">
 <meta property="article:author" content="MPasser">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Ledge%20Assistance%201.gif">
@@ -223,7 +223,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-02-18 09:12:55" itemprop="dateModified" datetime="2024-02-18T09:12:55+08:00">2024-02-18</time>
+                <time title="修改时间：2024-02-23 18:28:17" itemprop="dateModified" datetime="2024-02-23T18:28:17+08:00">2024-02-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -281,8 +281,8 @@
 <p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Jump%20Input%20Buffering%201.gif" alt="Jump Input Buffering 1"></p>
 <p>增加跳跃输入缓存帧大致就是“如果玩家按下跳跃后，在经过这个帧数之前落地，那在落地后就立即执行跳跃”。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Jump%20Input%20Buffering%202.gif" alt="Kump Input Buffering 2"></p>
-<p>相同地，跳跃输入缓存帧应该设置多长也不存在通用的标准答案。<a target="_blank" rel="noopener" href="http://storage.wertle.com/patreon/platformerFeel/Jump%20Buffering/">设置不同帧数进行游玩</a>来试着感受它对跳跃带来的影响。需要在补偿玩家反应时间和让角色动作看起来真实之间尽可能做好平衡。</p>
-<p>然后思考你的游戏想达到什么游玩感受。有个很长的跳跃输入缓存帧是否合理？游戏会变成什么样？应该如何做好设定（fantasy）能让其变得合理？也许你应该开始尝试并制作自己的游戏了！</p>
+<p>同样地，跳跃输入缓存帧应该设置多长也不存在通用的标准答案。<a target="_blank" rel="noopener" href="http://storage.wertle.com/patreon/platformerFeel/Jump%20Buffering/">设置不同帧数进行游玩</a>来试着感受它对跳跃带来的影响。需要在补偿玩家反应时间和让角色动作看起来真实之间尽可能做好平衡。</p>
+<p>然后思考你的游戏想达到什么游玩感受。有个很长的跳跃输入缓存帧是否合理？游戏会变成什么样？应该如何做好设定（fantasy）能让其变得合理？或许你应该可以开始尝试制作自己的游戏了！</p>
 <p>文档末尾有脚本示例。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>相对于游戏感受这个大的话题，这些只算是两个小的调整，玩家输入手感的打磨仍可深入研究。有很多其他主题可以探索：可变跳跃高度、微调辅助（nudge assistance）和调整跳跃最高点的停留时间等等。</p>
 <p>但如果你刚开始制作第一款平台跳跃游戏，但觉得对基础已有一定掌握，我认为在这两个方面调整玩家输入是个很好的开始。但注意一开始就考虑太多的话，也很容易感到不知所措，尤其是没有代码基础时。</p>
