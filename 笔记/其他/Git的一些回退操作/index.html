@@ -20,15 +20,20 @@
     var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="MPasser&#39;s blog">
-<meta property="og:url" content="http://mpasser.github.io/tags/JavaScript/index.html">
+  <meta name="description" content="Git的一些回退操作git checkout1git checkout [file]  如果文件修改后未存入暂存区，回退到最近一次commit的状态；如果之前存入过暂存区，之后又修改过，则回退到暂存区的状态。 可用通配符.匹配所有文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git的一些回退操作">
+<meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/Git%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9B%9E%E9%80%80%E6%93%8D%E4%BD%9C/index.html">
 <meta property="og:site_name" content="MPasser&#39;s blog">
+<meta property="og:description" content="Git的一些回退操作git checkout1git checkout [file]  如果文件修改后未存入暂存区，回退到最近一次commit的状态；如果之前存入过暂存区，之后又修改过，则回退到暂存区的状态。 可用通配符.匹配所有文件">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-27T12:41:31.391Z">
 <meta property="article:author" content="MPasser">
+<meta property="article:tag" content="Git">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://mpasser.github.io/tags/JavaScript/">
+<link rel="canonical" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/Git%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9B%9E%E9%80%80%E6%93%8D%E4%BD%9C/">
 
 
 <script id="page-configurations">
@@ -36,12 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: JavaScript | MPasser's blog</title>
+  <title>Git的一些回退操作 | MPasser's blog</title>
   
 
 
@@ -177,74 +182,124 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">JavaScript
-          <small>标签</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/Git%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9B%9E%E9%80%80%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git的一些回退操作
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-04 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-04T00:00:00+08:00">2020-07-04</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
+        <h2 id="Git的一些回退操作"><a href="#Git的一些回退操作" class="headerlink" title="Git的一些回退操作"></a>Git的一些回退操作</h2><h3 id="git-checkout"><a href="#git-checkout" class="headerlink" title="git checkout"></a>git checkout</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout [file]</span><br></pre></td></tr></table></figure>
+
+<p>如果文件修改后未存入暂存区，回退到最近一次commit的状态；如果之前存入过暂存区，之后又修改过，则回退到暂存区的状态。</p>
+<p>可用通配符<code>.</code>匹配所有文件</p>
+<h3 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset [file]</span><br></pre></td></tr></table></figure>
+
+<p>将暂存区中的内容回退到最近一次commit的状态</p>
+<p>同样地，也可用通配符<code>.</code>匹配所有文件</p>
+<p>如果加上指定的commitID</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset commitID [file]</span><br></pre></td></tr></table></figure>
+
+<p>则除了将暂存区中的内容回退到此commitID的提交内容，库的HEAD也会指向此commitID的提交。</p>
+<p>实际上述命令省略了表明影响范围的参数mixed，参数可选hard、soft、mixed，不指定的话，默认用的是mixed。</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --mixed commitID [file]</span><br></pre></td></tr></table></figure>
+
+<p>三种参数的区别是：</p>
+<ul>
+<li>soft：只改变库</li>
+<li>mixed：改变库和暂存区内容</li>
+<li>hard：库、暂存区、工作区的内容都会改变</li>
+</ul>
+<h3 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h3><p>HEAD类似于一个指针，多数时候可以理解为最近一次提交，但前文提到的git reset命令就可以更改此HEAD所指向的提交。</p>
+<p><code>HEAD^</code>或<code>HEAD~</code>表示HEAD的上次提交，<code>HEAD^^</code>表示HEAD的上上次提交，以此类推可在HEAD后继续加<code>^</code>符号。也可以用数字表示，例如<code>HEAD^3</code>和<code>HEAD^^^</code>等价。</p>
+<p>所以，如果对文件做了一些不想要的修改，并且已经提交了，就可使用</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset HEAD^ .</span><br></pre></td></tr></table></figure>
+
+<p>来回到上次提交的状态。</p>
+<h3 id="git-revert"><a href="#git-revert" class="headerlink" title="git revert"></a>git revert</h3><p>如果已将改动push到了远程，但想抛弃这次改动。</p>
+<p>有一种方式是，先在本地库使用<code>git reset</code>回退内容。然后使用</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin HEAD --force</span><br></pre></td></tr></table></figure>
+
+<p>强制将改动推送到远程。</p>
+<p>但这种方式会<strong>清空远程提交历史</strong>，非常不推荐。</p>
+<p>另一种方式是使用</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git revert commitID</span><br></pre></td></tr></table></figure>
+
+<p>将撤销作为了一次提交进行保存，再push到远程。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>有时会看到这种命令</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -- . </span><br></pre></td></tr></table></figure>
+
+<p>貌似和<code>git checkout .</code>没有任何区别。中间的<code>--</code>是什么作用？</p>
+<p><code>--</code>是一个常见的命令行参数分隔符，其作用在于明确指示命令行解析器，在<code>--</code>后的所有内容都应被视为参数或路径名，而不是可能的命令选项（即不会被解释为命令的标志或选项）。</p>
+<p>例如，有一个名为<code>-b</code>的文件，如果想检出这个文件，直接运行<code>git checkout -b</code>可能会被Git解释为尝试创建一个新分支而非检出文件，因为<code>-b</code>是用于创建新分支的选项。在此情况下，可使用<code>git checkout -- -b</code>来明确指出<code>-b</code>是文件名而不是选项。</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-07-15T00:00:00+08:00"
-              content="2021-07-15">
-          07-15
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Git/" rel="tag"># Git</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/%E7%AC%94%E8%AE%B0/%E5%89%8D%E7%AB%AF/jQuery%E7%AE%80%E4%BB%8B/" itemprop="url">
-            <span itemprop="name">jQuery简介</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/Git%E7%AC%94%E8%AE%B0/" rel="prev" title="Git笔记">
+      <i class="fa fa-chevron-left"></i> Git笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/%E5%89%8D%E7%AB%AF/HTML%E7%AC%94%E8%AE%B0/" rel="next" title="HTML笔记">
+      HTML笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
   </article>
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-07-14T00:00:00+08:00"
-              content="2020-07-14">
-          07-14
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/%E7%AC%94%E8%AE%B0/%E5%89%8D%E7%AB%AF/JavaScript%E7%AC%94%E8%AE%B0/" itemprop="url">
-            <span itemprop="name">JavaScript笔记</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
@@ -297,6 +352,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9B%9E%E9%80%80%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">Git的一些回退操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#git-checkout"><span class="nav-number">1.1.</span> <span class="nav-text">git checkout</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-reset"><span class="nav-number">1.2.</span> <span class="nav-text">git reset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HEAD"><span class="nav-number">1.3.</span> <span class="nav-text">HEAD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-revert"><span class="nav-number">1.4.</span> <span class="nav-text">git revert</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">2.</span> <span class="nav-text">其他</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
