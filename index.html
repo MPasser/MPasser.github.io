@@ -183,6 +183,83 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E4%BB%A3%E7%A0%81%E5%89%A5%E7%A6%BB%E7%9B%B8%E5%85%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E4%BB%A3%E7%A0%81%E5%89%A5%E7%A6%BB%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">Unity代码剥离相关</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-06-07 00:00:00" itemprop="dateCreated datePublished" datetime="2024-06-07T00:00:00+08:00">2024-06-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Unity的代码剥离"><a href="#Unity的代码剥离" class="headerlink" title="Unity的代码剥离"></a>Unity的代码剥离</h2><p>如同编译Java时需先将源码转成字节码，Unity打包编译源码时也有类似过程。</p>
+<p>在此过程中，Unity会检测代码引用情况，将类中从未使用过的成员、方法和不会执行到的代码删除，此过程称为<a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/ManagedCodeStripping.html">代码剥离</a>。这样做的效果是能够显著减少包体大小。</p>
+<p>这个检测过程是静态的，动态生成代码中的引用情况无法检测到。所以例如反射的情况，检测时未发现相关引用会将其删除，导致反射时找不到类或方法。</p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E4%BB%A3%E7%A0%81%E5%89%A5%E7%A6%BB%E7%9B%B8%E5%85%B3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E6%89%AB%E5%85%89%E6%95%88%E6%9E%9C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -879,82 +956,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MPasser">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MPasser's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/" class="post-title-link" itemprop="url">Unity的RectTransform</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-06-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-06-28T00:00:00+08:00">2023-06-28</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="RectTransform"><a href="#RectTransform" class="headerlink" title="RectTransform"></a>RectTransform</h2><p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/cn/2020.3/ScriptReference/RectTransform.html">Unity API</a></p>
-<p>RectTransforms 用于 GUI，不过也可以用于其他情况。 它用于存储和操作矩形的位置、大小和锚定，并支持各种形式的缩放（基于父 RectTransform）。</p>
-<h2 id="Anchors"><a href="#Anchors" class="headerlink" title="Anchors"></a>Anchors</h2><p>长得像下面这样</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%9A%84RectTransform/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1024,7 +1025,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-count">72</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
