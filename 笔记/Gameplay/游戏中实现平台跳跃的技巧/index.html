@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Jump%20Input%20Buffering%201.gif">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Jump%20Input%20Buffering%202.gif">
 <meta property="article:published_time" content="2023-11-29T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-06-13T09:49:18.207Z">
+<meta property="article:modified_time" content="2024-07-11T10:18:17.578Z">
 <meta property="article:author" content="MPasser">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Ledge%20Assistance%201.gif">
@@ -258,10 +258,10 @@
 <p><a target="_blank" rel="noopener" href="http://storage.wertle.com/patreon/platformerFeel/Ledge%20Assistance/">边缘辅助示例（需要键盘）</a></p>
 <p>这是一个基于Spalding教程的平台跳跃游戏设置，非常简单，但可以调整边缘辅助的宽限期帧数。</p>
 <p>宽限期帧数初始为0，也就是默认教程中的效果。在两块平台之间跳跃时应该能体会到，试图在最后一刻进行跳跃，结果却掉下去的感觉。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Ledge%20Assistance%201.gif" alt="Ledge Assistance 1"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Ledge%20Assistance%201.gif" alt="Ledge Assistance 1.gif"></p>
 <p>当输入和期望结果不匹配时感觉是很糟糕的。<a target="_blank" rel="noopener" href="http://kpulv.com/123/Platforming_Ledge_Forgiveness/">Kyle的文章</a>对这种现象进行了更深入的探讨，并提供了一种可选解决方案，也就是上述增加宽限期的方式。</p>
 <p>通过调整宽限帧（点击上&#x2F;下箭头按钮），你可以控制玩家悬空但仍能输入有效跳跃指令的帧数。这就是Kyle在他的文章中提到的“grace timer”。<a target="_blank" rel="noopener" href="http://storage.wertle.com/patreon/platformerFeel/Ledge%20Assistance/">尝试不同帧数</a>来感受其对跳跃的影响。选中“显示反馈”按钮开启宽限期生效时的视觉提示。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Ledge%20Assistance%202.gif" alt="Ledge Assistance 2"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Ledge%20Assistance%202.gif" alt="Ledge Assistance 2.gif"></p>
 <p><strong>宽限期设置在多少帧才合适呢？</strong></p>
 <p>这完全取决于游戏和追求的游戏感受。如果想制作一款困难、需要精确操控的平台跳跃游戏，或许需要将帧数控制的尽可能少，但仍要补偿人类的反应时间（若想定量讨论的话，人类反应时间在215ms左右，再依据目标FPS来定，或者直接根据自我感觉定。我推荐初始设为6帧，再不断调整）。</p>
 <p>然而，假设制作的游戏，是一只懒洋洋的蝙蝠通过拍打翅膀来做一次“跳跃”，这种跳跃如果拥有很长的宽限期，显得超级轻盈，也能说的通，所以蝙蝠可以直接从平台边缘跳下来，眼看要坠落但又重新进行了“跳跃”。我只是突然想到这个随便举个例子。</p>
@@ -271,9 +271,9 @@
 <p>这个问题的解决思路和边缘辅助相反：仍需要一个让跳跃输入生效的宽限期，但这回是设置在按下跳跃按钮<strong>之后</strong>而不是之前。</p>
 <p><a target="_blank" rel="noopener" href="http://storage.wertle.com/patreon/platformerFeel/Jump%20Buffering/">尝试跳跃输入缓存示例（需要键盘）</a></p>
 <p>和另一个示例一样，跳跃输入缓存帧设为0时，就是基础教程的版本。如果正好在角色碰到地面<strong>之前</strong>一点点时按下跳跃按钮，跳跃不会生效，角色会呆坐在地上，你可能也会觉得很呆。当尝试进行连续跳跃，在角色刚落地就跳跃时，这种问题会更频繁地发生。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Jump%20Input%20Buffering%201.gif" alt="Jump Input Buffering 1"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Jump%20Input%20Buffering%201.gif" alt="Jump Input Buffering 1.gif"></p>
 <p>增加跳跃输入缓存帧大致就是“如果玩家按下跳跃后，在经过这个帧数之前落地，那在落地后就立即执行跳跃”。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Jump%20Input%20Buffering%202.gif" alt="Kump Input Buffering 2"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/Jump%20Input%20Buffering%202.gif" alt="Kump Input Buffering 2.gif"></p>
 <p>同样地，跳跃输入缓存帧应该设置多长也不存在通用的标准答案。<a target="_blank" rel="noopener" href="http://storage.wertle.com/patreon/platformerFeel/Jump%20Buffering/">设置不同帧数进行游玩</a>来试着感受它对跳跃带来的影响。需要在补偿玩家反应时间和让角色动作看起来真实之间尽可能做好平衡。</p>
 <p>然后思考你的游戏想达到什么游玩感受。有个很长的跳跃输入缓存帧是否合理？游戏会变成什么样？应该如何做好设定（fantasy）能让其变得合理？或许你应该可以开始尝试制作自己的游戏了！</p>
 <p>文档末尾有脚本示例。</p>
