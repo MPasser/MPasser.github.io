@@ -28,10 +28,10 @@
 <meta property="og:description" content="前言Unity Shader实现的飘带效果，可用在一些UI动画中配合使用。实际效果如下：  思路形状变换">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E9%A3%98%E5%B8%A6%E6%95%88%E6%9E%9C/%E9%A3%98%E5%B8%A6%E6%95%88%E6%9E%9C.gif">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E9%A3%98%E5%B8%A6%E6%95%88%E6%9E%9C/%E6%B5%81%E7%A8%8B%E7%A4%BA%E6%84%8F.gif">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E9%A3%98%E5%B8%A6%E6%95%88%E6%9E%9C/%E6%B5%81%E7%A8%8B%E7%A4%BA%E6%84%8F.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E9%A3%98%E5%B8%A6%E6%95%88%E6%9E%9C/%E4%B8%A4%E6%9D%A1%E9%A3%98%E5%B8%A6%E5%9C%A8%E5%90%8C%E4%B8%80%E5%9C%BA%E6%99%AF.gif">
 <meta property="article:published_time" content="2024-08-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-08-22T04:12:02.816Z">
+<meta property="article:modified_time" content="2024-08-22T06:34:16.767Z">
 <meta property="article:author" content="MPasser">
 <meta property="article:tag" content="C#">
 <meta name="twitter:card" content="summary">
@@ -242,7 +242,7 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Unity Shader实现的飘带效果，可用在一些UI动画中配合使用。实际效果如下：</p>
 <p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E9%A3%98%E5%B8%A6%E6%95%88%E6%9E%9C/%E9%A3%98%E5%B8%A6%E6%95%88%E6%9E%9C.gif" alt="飘带效果.gif"></p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><h3 id="形状变换"><a href="#形状变换" class="headerlink" title="形状变换"></a>形状变换</h3><p>由于只能控制图片内的像素，所以需要先纵向压缩图片，为之后的弯曲留出空间。然后将图片沿着三角函数曲线弯曲。整个变换过程如下图所示：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E9%A3%98%E5%B8%A6%E6%95%88%E6%9E%9C/%E6%B5%81%E7%A8%8B%E7%A4%BA%E6%84%8F.gif" alt="流程示意.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E9%A3%98%E5%B8%A6%E6%95%88%E6%9E%9C/%E6%B5%81%E7%A8%8B%E7%A4%BA%E6%84%8F.png" alt="流程示意.png"></p>
 <p>假设原图高度为1，纵向压缩图片后图片的高度为<code>_Thickness</code>(范围是(0, 1])。原图上一个坐标为<code>(u, v)</code>的像素，经过纵向压缩图片转换后的坐标就是<code>(u, _Thickness * v + (1 - _Thickness) / 2)</code></p>
 <p>弯曲形状的三角函数振幅是(1 - _Thickness) &#x2F; 2，假设其就是正弦<code>y = (1 - _Thickness) / 2 * sin(x)</code>，则纵向压缩后，图片上一个坐标为<code>(u&#39;, v&#39;)</code>的像素，经过曲线弯曲转换后的坐标就是<code>(u&#39;, v&#39; + (1 - _Thickness) / 2 * sin(u&#39;))</code></p>
 <p>结合两个过程，原图上一个坐标为<code>(u, v)</code>的像素，完整转换后的坐标就是<code>(u, _Thickness * v + (1 - _Thickness) / 2) * (1 + sin(u))</code></p>
