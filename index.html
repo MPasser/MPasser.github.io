@@ -183,6 +183,82 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Gameplay/%E5%85%B3%E4%BA%8E%E5%AF%BB%E7%89%A9%E8%A7%A3%E8%B0%9C%E6%B8%B8%E6%88%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E6%83%B3%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AC%94%E8%AE%B0/Gameplay/%E5%85%B3%E4%BA%8E%E5%AF%BB%E7%89%A9%E8%A7%A3%E8%B0%9C%E6%B8%B8%E6%88%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E6%83%B3%E6%B3%95/" class="post-title-link" itemprop="url">关于寻物解谜游戏的一些想法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-14T00:00:00+08:00">2025-09-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Gameplay/" itemprop="url" rel="index"><span itemprop="name">Gameplay</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近准备做个简单的寻物解谜游戏，所以对这个类型的游戏做了一点研究，记录一下过程中的想法。</p>
+<h2 id="寻物解谜游戏的特点"><a href="#寻物解谜游戏的特点" class="headerlink" title="寻物解谜游戏的特点"></a>寻物解谜游戏的特点</h2><p>在我看来，寻物解谜游戏的核心流程比较简单：即从游戏场景中获取信息或道具，利用这些来解开锁，开锁之后又获得新的信息或道具，继续解锁，直到达到目标，通关游戏。</p>
+<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IkRFU0NSSVBUSU9OIiBoZWlnaHQ9IjIyMXB4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6MTQ1cHg7aGVpZ2h0OjIyMXB4O2JhY2tncm91bmQ6I0ZGRkZGRjsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDE0NSAyMjEiIHdpZHRoPSIxNDVweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PGRlZnMvPjxnPjwhLS1lbnRpdHkgPz8/Pz8/Py0tPjxnIGNsYXNzPSJlbnRpdHkiIGRhdGEtZW50aXR5PSIuLi4uLi4uIiBkYXRhLXNvdXJjZS1saW5lPSIxIiBkYXRhLXVpZD0iZW50MDAwMiIgaWQ9ImVudGl0eV8uLi4uLi4uIj48ZWxsaXBzZSBjeD0iNzIuNzI1MiIgY3k9IjIxLjc0NSIgZmlsbD0iI0YxRjFGMSIgcng9IjY2LjcyNTIiIHJ5PSIxNS43NDUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9Ijk3Ljk5OTYiIHg9IjIzLjcyNTQiIHk9IjI2LjM5MzUiPiYjMzM3MTk7JiMyMTQ2MjsmIzM2OTQ3OyYjMjA4NTU7JiMyNTExMDsmIzIwNDQ5OyYjMjQ2ODc7PC90ZXh0PjwvZz48IS0tZW50aXR5ID8/LS0+PGcgY2xhc3M9ImVudGl0eSIgZGF0YS1lbnRpdHk9Ii4uIiBkYXRhLXNvdXJjZS1saW5lPSIxIiBkYXRhLXVpZD0iZW50MDAwMyIgaWQ9ImVudGl0eV8uLiI+PGVsbGlwc2UgY3g9IjcyLjcyODkiIGN5PSIxMTIuMDIzNiIgZmlsbD0iI0YxRjFGMSIgcng9IjIyLjc5ODkiIHJ5PSIxNC41MjM2IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyNy45OTk5IiB4PSI1OC43MjkiIHk9IjExNi42NzIxIj4mIzI0MzIwOyYjMzgxNDU7PC90ZXh0PjwvZz48IS0tZW50aXR5ID8/LS0+PGcgY2xhc3M9ImVudGl0eSIgZGF0YS1lbnRpdHk9Ii4uIiBkYXRhLXNvdXJjZS1saW5lPSIzIiBkYXRhLXVpZD0iZW50MDAwNiIgaWQ9ImVudGl0eV8uLiI+PGVsbGlwc2UgY3g9IjcyLjcyODkiIGN5PSIyMDEuMDczNiIgZmlsbD0iI0YxRjFGMSIgcng9IjIyLjc5ODkiIHJ5PSIxNC41MjM2IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyNy45OTk5IiB4PSI1OC43MjkiIHk9IjIwNS43MjIxIj4mIzM2ODkwOyYjMjA4NTE7PC90ZXh0PjwvZz48IS0tbGluayA/Pz8/Pz8/IHRvID8/LS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9Ii4uLi4uLi4iIGRhdGEtZW50aXR5LTI9Ii4uIiBkYXRhLXNvdXJjZS1saW5lPSIxIiBkYXRhLXVpZD0ibG5rNCIgaWQ9ImxpbmtfLi4uLi4uLl8uLiI+PHBhdGggZD0iTTYyLjg3LDM3LjcyIEM1OC44Myw1NC43NCA1Ny40MjYsNzYuNDQ1NiA2MS44NDYsOTIuNDg1NiIgZmlsbD0ibm9uZSIgaWQ9IiYjMzM3MTk7JiMyMTQ2MjsmIzM2OTQ3OyYjMjA4NTU7JiMyNTExMDsmIzIwNDQ5OyYjMjQ2ODc7LXRvLSYjMjQzMjA7JiMzODE0NTsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjYzLjQ0LDk4LjI3LDY0LjkwNTMsODguNTMwOCw2Mi4xMTE3LDkzLjQ0OTcsNTcuMTkyOCw5MC42NTYsNjMuNDQsOTguMjciIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48L2c+PCEtLWxpbmsgPz8gdG8gPz8/Pz8/Py0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSIuLiIgZGF0YS1lbnRpdHktMj0iLi4uLi4uLiIgZGF0YS1zb3VyY2UtbGluZT0iMiIgZGF0YS11aWQ9ImxuazUiIGlkPSJsaW5rXy4uXy4uLi4uLi4iPjxwYXRoIGQ9Ik04Mi40OCw5OC41NSBDODcuMjQsODIuNTUgODguOTIxNiw2MC42NTkzIDg0LjYyMTYsNDMuNTM5MyIgZmlsbD0ibm9uZSIgaWQ9IiYjMjQzMjA7JiMzODE0NTstdG8tJiMzMzcxOTsmIzIxNDYyOyYjMzY5NDc7JiMyMDg1NTsmIzI1MTEwOyYjMjA0NDk7JiMyNDY4NzsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjgzLjE2LDM3LjcyLDgxLjQ3MjksNDcuNDIzMyw4NC4zNzgsNDIuNTY5NCw4OS4yMzE5LDQ1LjQ3NDUsODMuMTYsMzcuNzIiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48L2c+PCEtLWxpbmsgPz8gdG8gPz8tLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iLi4iIGRhdGEtZW50aXR5LTI9Ii4uIiBkYXRhLXNvdXJjZS1saW5lPSIzIiBkYXRhLXVpZD0ibG5rNyIgaWQ9ImxpbmtfLi5fLi4iPjxwYXRoIGQ9Ik03Mi43MywxMjcgQzcyLjczLDE0My4yNSA3Mi43MywxNjMuODkgNzIuNzMsMTgwLjEyIiBmaWxsPSJub25lIiBpZD0iJiMyNDMyMDsmIzM4MTQ1Oy10by0mIzM2ODkwOyYjMjA4NTE7IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI3Mi43MywxODYuMTIsNzYuNzMsMTc3LjEyLDcyLjczLDE4MS4xMiw2OC43MywxNzcuMTIsNzIuNzMsMTg2LjEyIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PC9nPjwhLS1TUkM9W3F0WkhqX3JmX3hJTlpQRVZqY3Zfclo3am9WdzVwbmhOUW9oZXdqZWZRM3BUcV8xb0lnQ2M1dW0xNFNNazBxdEhvdVBQSnJpdFFtODBdLS0+PC9nPjwvc3ZnPg==">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Gameplay/%E5%85%B3%E4%BA%8E%E5%AF%BB%E7%89%A9%E8%A7%A3%E8%B0%9C%E6%B8%B8%E6%88%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E6%83%B3%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E6%8E%A7%E5%88%B6%E5%99%A8%E4%BB%A3%E7%A0%81%E5%88%86%E8%A7%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -887,82 +963,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E7%89%A9%E4%BD%93%E9%9D%A0%E8%BF%91%E5%B1%8F%E5%B9%95%E8%BE%B9%E7%BC%98%E6%97%B6%E9%80%8F%E6%98%8E%E6%95%88%E6%9E%9C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MPasser">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MPasser's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E7%89%A9%E4%BD%93%E9%9D%A0%E8%BF%91%E5%B1%8F%E5%B9%95%E8%BE%B9%E7%BC%98%E6%97%B6%E9%80%8F%E6%98%8E%E6%95%88%E6%9E%9C/" class="post-title-link" itemprop="url">Unity实现物体靠近屏幕边缘时透明效果</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-09-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-09-28T00:00:00+08:00">2023-09-28</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>应用场景和效果如下：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E7%89%A9%E4%BD%93%E9%9D%A0%E8%BF%91%E5%B1%8F%E5%B9%95%E8%BE%B9%E7%BC%98%E6%97%B6%E9%80%8F%E6%98%8E%E6%95%88%E6%9E%9C/%E7%89%A9%E4%BD%93%E9%9D%A0%E8%BF%91%E5%B1%8F%E5%B9%95%E8%BE%B9%E7%BC%98%E6%97%B6%E5%8F%98%E9%80%8F%E6%98%8E.gif" alt="物体靠近屏幕边缘时变透明.gif"></p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>在Shader中使用UnityCG.cginc的内置函数ComputeScreenPos，计算片元所在的屏幕坐标，再根据屏幕坐标设置片元的透明度。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%AE%9E%E7%8E%B0%E7%89%A9%E4%BD%93%E9%9D%A0%E8%BF%91%E5%B1%8F%E5%B9%95%E8%BE%B9%E7%BC%98%E6%97%B6%E9%80%8F%E6%98%8E%E6%95%88%E6%9E%9C/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1032,7 +1032,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">75</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
