@@ -183,6 +183,84 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%92%8C%E5%8D%95%E8%B0%83%E6%A0%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%92%8C%E5%8D%95%E8%B0%83%E6%A0%88/" class="post-title-link" itemprop="url">滑动窗口和单调栈</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-02 00:00:00" itemprop="dateCreated datePublished" datetime="2022-05-02T00:00:00+08:00">2022-05-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h2><p>例：<br>有一个整型数组arr和一个大小为w的窗口从数组的最左边滑到最右边，窗口每次向右边滑动一个位置。<br>例如，数组为[4,3,5,2,8,1,6,7]，窗口大小为3时：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[4 3 5] 2 8 1 6 7 //最大值为5</span><br><span class="line">4 [3 5 2] 8 1 6 7 //最大值为5</span><br><span class="line">4 3 [5 2 8] 1 6 7 //最大值为8</span><br><span class="line">4 3 5 [2 8 1] 6 7 //最大值为8</span><br><span class="line">4 3 5 2 [8 1 6] 7 //最大值为8</span><br><span class="line">4 3 5 2 8 [1 6 7] //最大值为7</span><br></pre></td></tr></table></figure>
+
+<p>一共输出arr.length - w + 1 个窗口最大值。实现一个函数，输入arr和窗口大小，输出窗口最大值数组。</p>
+<p>解：<br>使用双端队列。从头到尾需要保持从大到小的顺序。双端队列头部的值即为窗口内最大值。<br>当数组中一个新元素进入窗口内时，比较其和双端队列尾部元素的大小。能够严格保证从大到小的单调性时，元素直接加入双端队列尾部（入栈）。如果无法保证单调性，则队列从尾部弹出元素，直至新元素加入队列后，仍能维持队列单调性。<br>当一个新元素离开窗口（过期）时，判断这个元素和双端队列头部是否是同一个，如果是，则队列头部弹出这个值，如果不是则不需要操作。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%92%8C%E5%8D%95%E8%B0%83%E6%A0%88/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E6%B0%B4%E5%A1%98%E6%8A%BD%E6%A0%B7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -889,83 +967,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MPasser">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MPasser's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91/" class="post-title-link" itemprop="url">二叉树</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-03-26 00:00:00" itemprop="dateCreated datePublished" datetime="2022-03-26T00:00:00+08:00">2022-03-26</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="二叉树结构"><a href="#二叉树结构" class="headerlink" title="二叉树结构"></a>二叉树结构</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TreeNode</span>&lt;V&gt; &#123;</span><br><span class="line">    V value;</span><br><span class="line">    TreeNode&lt;V&gt; left;</span><br><span class="line">    TreeNode&lt;V&gt; right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="二叉树的递归序"><a href="#二叉树的递归序" class="headerlink" title="二叉树的递归序"></a>二叉树的递归序</h2><p>对于一颗二叉树，按下列代码，访问到树节点的顺序。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">recOrder</span><span class="params">(TreeNode root)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="literal">null</span> == root) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 第一次访问到当前节点</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    recOrder(root.left);</span><br><span class="line">    <span class="comment">// 第二次访问到当前节点，从左子树回来</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    recOrder(root.right);</span><br><span class="line">    <span class="comment">// 第三次访问到当前节点，从右子树回来</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Java/%E7%AE%97%E6%B3%95/%E5%B7%A6%E7%A8%8B%E4%BA%91%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1035,7 +1036,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

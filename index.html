@@ -183,6 +183,73 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E7%9A%84%E5%88%86%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E7%9A%84%E5%88%86%E7%B1%BB/" class="post-title-link" itemprop="url">哈希函数的分类</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-11-27 00:00:00" itemprop="dateCreated datePublished" datetime="2025-11-27T00:00:00+08:00">2025-11-27</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h3 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h3><p>在开发过程中，每个游戏关卡都需要一个固定的随机颜色表，所以决定使用关卡信息生成一个随机种子，使用此随机种子生成随机颜色表。</p>
+<p>关卡信息有两部分，枚举的关卡类型LevelType和整形的关卡序号LevelIndex，随机种子的计算方式是根据这两个数据，使用<code>System.HashCode.Combine()</code>计算哈希值，具体是：</p>
+<p><code>var randomSeed = System.HashCode.Combine((int)LevelType, LevelIndex);</code></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E7%9A%84%E5%88%86%E7%B1%BB/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Gameplay/%E5%85%B3%E4%BA%8E%E5%AF%BB%E7%89%A9%E8%A7%A3%E8%B0%9C%E6%B8%B8%E6%88%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E6%83%B3%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -232,7 +299,7 @@
       
           <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近准备做个简单的寻物解谜游戏，所以对这个类型的游戏做了一点研究，记录一下过程中的想法。</p>
 <h2 id="寻物解谜游戏的特点"><a href="#寻物解谜游戏的特点" class="headerlink" title="寻物解谜游戏的特点"></a>寻物解谜游戏的特点</h2><p>在我看来，寻物解谜游戏的核心流程比较简单：即从游戏场景中获取信息或道具，利用这些来解开锁，开锁之后又获得新的信息或道具，继续解锁，直到达到目标，通关游戏。</p>
-<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IkRFU0NSSVBUSU9OIiBoZWlnaHQ9IjIyMXB4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6MTQ1cHg7aGVpZ2h0OjIyMXB4O2JhY2tncm91bmQ6I0ZGRkZGRjsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDE0NSAyMjEiIHdpZHRoPSIxNDVweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PGRlZnMvPjxnPjwhLS1lbnRpdHkgPz8/Pz8/Py0tPjxnIGNsYXNzPSJlbnRpdHkiIGRhdGEtZW50aXR5PSIuLi4uLi4uIiBkYXRhLXNvdXJjZS1saW5lPSIxIiBkYXRhLXVpZD0iZW50MDAwMiIgaWQ9ImVudGl0eV8uLi4uLi4uIj48ZWxsaXBzZSBjeD0iNzIuNzI1MiIgY3k9IjIxLjc0NSIgZmlsbD0iI0YxRjFGMSIgcng9IjY2LjcyNTIiIHJ5PSIxNS43NDUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9Ijk3Ljk5OTYiIHg9IjIzLjcyNTQiIHk9IjI2LjM5MzUiPiYjMzM3MTk7JiMyMTQ2MjsmIzM2OTQ3OyYjMjA4NTU7JiMyNTExMDsmIzIwNDQ5OyYjMjQ2ODc7PC90ZXh0PjwvZz48IS0tZW50aXR5ID8/LS0+PGcgY2xhc3M9ImVudGl0eSIgZGF0YS1lbnRpdHk9Ii4uIiBkYXRhLXNvdXJjZS1saW5lPSIxIiBkYXRhLXVpZD0iZW50MDAwMyIgaWQ9ImVudGl0eV8uLiI+PGVsbGlwc2UgY3g9IjcyLjcyODkiIGN5PSIxMTIuMDIzNiIgZmlsbD0iI0YxRjFGMSIgcng9IjIyLjc5ODkiIHJ5PSIxNC41MjM2IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyNy45OTk5IiB4PSI1OC43MjkiIHk9IjExNi42NzIxIj4mIzI0MzIwOyYjMzgxNDU7PC90ZXh0PjwvZz48IS0tZW50aXR5ID8/LS0+PGcgY2xhc3M9ImVudGl0eSIgZGF0YS1lbnRpdHk9Ii4uIiBkYXRhLXNvdXJjZS1saW5lPSIzIiBkYXRhLXVpZD0iZW50MDAwNiIgaWQ9ImVudGl0eV8uLiI+PGVsbGlwc2UgY3g9IjcyLjcyODkiIGN5PSIyMDEuMDczNiIgZmlsbD0iI0YxRjFGMSIgcng9IjIyLjc5ODkiIHJ5PSIxNC41MjM2IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyNy45OTk5IiB4PSI1OC43MjkiIHk9IjIwNS43MjIxIj4mIzM2ODkwOyYjMjA4NTE7PC90ZXh0PjwvZz48IS0tbGluayA/Pz8/Pz8/IHRvID8/LS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9Ii4uLi4uLi4iIGRhdGEtZW50aXR5LTI9Ii4uIiBkYXRhLWxpbmstdHlwZT0iZGVwZW5kZW5jeSIgZGF0YS1zb3VyY2UtbGluZT0iMSIgZGF0YS11aWQ9ImxuazQiIGlkPSJsaW5rXy4uLi4uLi5fLi4iPjxwYXRoIGQ9Ik02Mi44NywzNy43MiBDNTguODMsNTQuNzQgNTcuNDI2LDc2LjQ0NTYgNjEuODQ2LDkyLjQ4NTYiIGZpbGw9Im5vbmUiIGlkPSImIzMzNzE5OyYjMjE0NjI7JiMzNjk0NzsmIzIwODU1OyYjMjUxMTA7JiMyMDQ0OTsmIzI0Njg3Oy10by0mIzI0MzIwOyYjMzgxNDU7IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI2My40NCw5OC4yNyw2NC45MDUzLDg4LjUzMDgsNjIuMTExNyw5My40NDk3LDU3LjE5MjgsOTAuNjU2LDYzLjQ0LDk4LjI3IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PC9nPjwhLS1saW5rID8/IHRvID8/Pz8/Pz8tLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iLi4iIGRhdGEtZW50aXR5LTI9Ii4uLi4uLi4iIGRhdGEtbGluay10eXBlPSJkZXBlbmRlbmN5IiBkYXRhLXNvdXJjZS1saW5lPSIyIiBkYXRhLXVpZD0ibG5rNSIgaWQ9ImxpbmtfLi5fLi4uLi4uLiI+PHBhdGggZD0iTTgyLjQ4LDk4LjU1IEM4Ny4yNCw4Mi41NSA4OC45MjE2LDYwLjY1OTMgODQuNjIxNiw0My41MzkzIiBmaWxsPSJub25lIiBpZD0iJiMyNDMyMDsmIzM4MTQ1Oy10by0mIzMzNzE5OyYjMjE0NjI7JiMzNjk0NzsmIzIwODU1OyYjMjUxMTA7JiMyMDQ0OTsmIzI0Njg3OyIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iODMuMTYsMzcuNzIsODEuNDcyOSw0Ny40MjMzLDg0LjM3OCw0Mi41Njk0LDg5LjIzMTksNDUuNDc0NSw4My4xNiwzNy43MiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjwvZz48IS0tbGluayA/PyB0byA/Py0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSIuLiIgZGF0YS1lbnRpdHktMj0iLi4iIGRhdGEtbGluay10eXBlPSJkZXBlbmRlbmN5IiBkYXRhLXNvdXJjZS1saW5lPSIzIiBkYXRhLXVpZD0ibG5rNyIgaWQ9ImxpbmtfLi5fLi4iPjxwYXRoIGQ9Ik03Mi43MywxMjcgQzcyLjczLDE0My4yNSA3Mi43MywxNjMuODkgNzIuNzMsMTgwLjEyIiBmaWxsPSJub25lIiBpZD0iJiMyNDMyMDsmIzM4MTQ1Oy10by0mIzM2ODkwOyYjMjA4NTE7IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI3Mi43MywxODYuMTIsNzYuNzMsMTc3LjEyLDcyLjczLDE4MS4xMiw2OC43MywxNzcuMTIsNzIuNzMsMTg2LjEyIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PC9nPjwhLS1TUkM9W3F0WkhqX3JmX3hJTlpQRVZqY3Zfclo3am9WdzVwbmhOUW9oZXdqZWZRM3BUcV8xb0lnQ2M1dW0xNFNNazBxdEhvdVBQSnJpdFFtODBdLS0+PC9nPjwvc3ZnPg==">
+<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IkRFU0NSSVBUSU9OIiBoZWlnaHQ9IjIyMXB4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6MTQ1cHg7aGVpZ2h0OjIyMXB4O2JhY2tncm91bmQ6I0ZGRkZGRjsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDE0NSAyMjEiIHdpZHRoPSIxNDVweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PGRlZnMvPjxnPjwhLS1lbnRpdHkgPz8/Pz8/Py0tPjxnIGNsYXNzPSJlbnRpdHkiIGRhdGEtcXVhbGlmaWVkLW5hbWU9Ii4uLi4uLi4iIGRhdGEtc291cmNlLWxpbmU9IjEiIGlkPSJlbnQwMDAyIj48ZWxsaXBzZSBjeD0iNzIuNzI1MiIgY3k9IjIxLjc0NSIgZmlsbD0iI0YxRjFGMSIgcng9IjY2LjcyNTIiIHJ5PSIxNS43NDUiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9Ijk3Ljk5OTYiIHg9IjIzLjcyNTQiIHk9IjI2LjM5MzUiPiYjMzM3MTk7JiMyMTQ2MjsmIzM2OTQ3OyYjMjA4NTU7JiMyNTExMDsmIzIwNDQ5OyYjMjQ2ODc7PC90ZXh0PjwvZz48IS0tZW50aXR5ID8/LS0+PGcgY2xhc3M9ImVudGl0eSIgZGF0YS1xdWFsaWZpZWQtbmFtZT0iLi4iIGRhdGEtc291cmNlLWxpbmU9IjEiIGlkPSJlbnQwMDAzIj48ZWxsaXBzZSBjeD0iNzIuNzI4OSIgY3k9IjExMi4wMjM2IiBmaWxsPSIjRjFGMUYxIiByeD0iMjIuNzk4OSIgcnk9IjE0LjUyMzYiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MC41OyIvPjx0ZXh0IGZpbGw9IiMwMDAwMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmciIHRleHRMZW5ndGg9IjI3Ljk5OTkiIHg9IjU4LjcyOSIgeT0iMTE2LjY3MjEiPiYjMjQzMjA7JiMzODE0NTs8L3RleHQ+PC9nPjwhLS1lbnRpdHkgPz8tLT48ZyBjbGFzcz0iZW50aXR5IiBkYXRhLXF1YWxpZmllZC1uYW1lPSIuLiIgZGF0YS1zb3VyY2UtbGluZT0iMyIgaWQ9ImVudDAwMDYiPjxlbGxpcHNlIGN4PSI3Mi43Mjg5IiBjeT0iMjAxLjA3MzYiIGZpbGw9IiNGMUYxRjEiIHJ4PSIyMi43OTg5IiByeT0iMTQuNTIzNiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMjcuOTk5OSIgeD0iNTguNzI5IiB5PSIyMDUuNzIyMSI+JiMzNjg5MDsmIzIwODUxOzwvdGV4dD48L2c+PCEtLWxpbmsgPz8/Pz8/PyB0byA/Py0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSJlbnQwMDAyIiBkYXRhLWVudGl0eS0yPSJlbnQwMDAzIiBkYXRhLWxpbmstdHlwZT0iZGVwZW5kZW5jeSIgZGF0YS1zb3VyY2UtbGluZT0iMSIgaWQ9ImxuazQiPjxwYXRoIGQ9Ik02Mi44NywzNy43MiBDNTguODMsNTQuNzQgNTcuNDI2LDc2LjQ0NTYgNjEuODQ2LDkyLjQ4NTYiIGZpbGw9Im5vbmUiIGlkPSImIzMzNzE5OyYjMjE0NjI7JiMzNjk0NzsmIzIwODU1OyYjMjUxMTA7JiMyMDQ0OTsmIzI0Njg3Oy10by0mIzI0MzIwOyYjMzgxNDU7IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI2My40NCw5OC4yNyw2NC45MDUzLDg4LjUzMDgsNjIuMTExNyw5My40NDk3LDU3LjE5MjgsOTAuNjU2LDYzLjQ0LDk4LjI3IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PC9nPjwhLS1saW5rID8/IHRvID8/Pz8/Pz8tLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iZW50MDAwMyIgZGF0YS1lbnRpdHktMj0iZW50MDAwMiIgZGF0YS1saW5rLXR5cGU9ImRlcGVuZGVuY3kiIGRhdGEtc291cmNlLWxpbmU9IjIiIGlkPSJsbms1Ij48cGF0aCBkPSJNODIuNDgsOTguNTUgQzg3LjI0LDgyLjU1IDg4LjkyMTYsNjAuNjU5MyA4NC42MjE2LDQzLjUzOTMiIGZpbGw9Im5vbmUiIGlkPSImIzI0MzIwOyYjMzgxNDU7LXRvLSYjMzM3MTk7JiMyMTQ2MjsmIzM2OTQ3OyYjMjA4NTU7JiMyNTExMDsmIzIwNDQ5OyYjMjQ2ODc7IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PHBvbHlnb24gZmlsbD0iIzE4MTgxOCIgcG9pbnRzPSI4My4xNiwzNy43Miw4MS40NzI5LDQ3LjQyMzMsODQuMzc4LDQyLjU2OTQsODkuMjMxOSw0NS40NzQ1LDgzLjE2LDM3LjcyIiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjE7Ii8+PC9nPjwhLS1saW5rID8/IHRvID8/LS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9ImVudDAwMDMiIGRhdGEtZW50aXR5LTI9ImVudDAwMDYiIGRhdGEtbGluay10eXBlPSJkZXBlbmRlbmN5IiBkYXRhLXNvdXJjZS1saW5lPSIzIiBpZD0ibG5rNyI+PHBhdGggZD0iTTcyLjczLDEyNyBDNzIuNzMsMTQzLjI1IDcyLjczLDE2My44OSA3Mi43MywxODAuMTIiIGZpbGw9Im5vbmUiIGlkPSImIzI0MzIwOyYjMzgxNDU7LXRvLSYjMzY4OTA7JiMyMDg1MTsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjcyLjczLDE4Ni4xMiw3Ni43MywxNzcuMTIsNzIuNzMsMTgxLjEyLDY4LjczLDE3Ny4xMiw3Mi43MywxODYuMTIiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48L2c+PCEtLVNSQz1bcXRaSGpfcmZfeElOWlBFVmpjdl9yWjdqb1Z3NXBuaE5Rb2hld2plZlEzcFRxXzFvSWdDYzV1bTE0U01rMHF0SG91UFBKcml0UW04MF0tLT48L2c+PC9zdmc+">
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/%E7%AC%94%E8%AE%B0/Gameplay/%E5%85%B3%E4%BA%8E%E5%AF%BB%E7%89%A9%E8%A7%A3%E8%B0%9C%E6%B8%B8%E6%88%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E6%83%B3%E6%B3%95/#more" rel="contents">
@@ -881,88 +948,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/DOTween%E5%81%9C%E6%AD%A2%E5%8A%A8%E7%94%BB%E5%AF%B9%E5%9B%9E%E8%B0%83%E7%9A%84%E5%BD%B1%E5%93%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MPasser">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MPasser's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AC%94%E8%AE%B0/Unity/DOTween%E5%81%9C%E6%AD%A2%E5%8A%A8%E7%94%BB%E5%AF%B9%E5%9B%9E%E8%B0%83%E7%9A%84%E5%BD%B1%E5%93%8D/" class="post-title-link" itemprop="url">DOTween停止动画对回调的影响</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-11-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-28T00:00:00+08:00">2023-11-28</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="DOTween停止动画对回调的影响"><a href="#DOTween停止动画对回调的影响" class="headerlink" title="DOTween停止动画对回调的影响"></a>DOTween停止动画对回调的影响</h2><p>DOTween中的回调，一般有OnComplete加在动画结束，以及Insert&#x2F;AppendCallback插在动画中间。OnStart也可添加回调，但停止动画时一般都已经执行，故不做讨论。</p>
-<p>DOTween的停止动画，可用Complete方法使动画立即播放完毕，也可用Kill方法使动画中断。</p>
-<p>以下是几种DOTween停止动画时，对回调方法执行情况影响的测试结果：</p>
-<ul>
-<li>DOTween.Complete(false) 方法会执行OnComplete回调，但不会执行AppendCallback中的方法</li>
-<li>DOTween.Complete(True) 方法会执行OnComplete回调，也会执行AppendCallback中的方法</li>
-<li>DOTween.Kill(false) 暴力停止，动画若未执行完，则其主体会留在当时所处状态。后面未执行到的任何回调也都不再执行</li>
-<li>DOTween.Kill(True) 方法会执行OnComplete回调，但不会执行AppendCallback中的方法</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/DOTween%E5%81%9C%E6%AD%A2%E5%8A%A8%E7%94%BB%E5%AF%B9%E5%9B%9E%E8%B0%83%E7%9A%84%E5%BD%B1%E5%93%8D/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1032,7 +1017,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
