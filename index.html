@@ -221,9 +221,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><h3 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h3><p>在开发过程中，每个游戏关卡都需要一个固定的随机颜色表，所以决定使用关卡信息生成一个随机种子，使用此随机种子生成随机颜色表。</p>
+          <h2 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h2><p>在开发过程中，每个游戏关卡都需要一个固定的随机颜色表，所以决定使用关卡信息生成一个随机种子，使用此随机种子生成随机颜色表。</p>
 <p>关卡信息有两部分，枚举的关卡类型LevelType和整形的关卡序号LevelIndex，随机种子的计算方式是根据这两个数据，使用<code>System.HashCode.Combine()</code>计算哈希值，具体是：</p>
 <p><code>var randomSeed = System.HashCode.Combine((int)LevelType, LevelIndex);</code></p>
+<p>先后两次运行游戏，发现同一关的随机颜色表有差异，说明<code>System.HashCode.Combine()</code>在入参相同的情况下，在两次运行周期中的计算结果不同。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E7%9A%84%E5%88%86%E7%B1%BB/#more" rel="contents">
@@ -1071,7 +1072,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
