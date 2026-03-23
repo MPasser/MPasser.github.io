@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/Book_and_Quill_JE2_BE2.png">
+  <link rel="mask-icon" href="/images/favicons/Book_and_Quill_JE2_BE2.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="场景说明大多数游戏都需要经验等级系统。当玩家获得经验时，UI 通常要完成以下工作：  经验条平滑增长； 达到当前等级上限时触发升级； 若一次获得大量经验，支持连续升级并连续播放动画。  在此讨论如何设计一套通用的数据逻辑和动画实现。 效果演示">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity经验等级组件">
+<meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/index.html">
+<meta property="og:site_name" content="MPasser&#39;s blog">
+<meta property="og:description" content="场景说明大多数游戏都需要经验等级系统。当玩家获得经验时，UI 通常要完成以下工作：  经验条平滑增长； 达到当前等级上限时触发升级； 若一次获得大量经验，支持连续升级并连续播放动画。  在此讨论如何设计一套通用的数据逻辑和动画实现。 效果演示">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/%E6%95%88%E6%9E%9C%E6%BC%94%E7%A4%BA.gif">
+<meta property="article:published_time" content="2026-01-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-23T09:08:46.465Z">
+<meta property="article:author" content="MPasser">
+<meta property="article:tag" content="C#">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/%E6%95%88%E6%9E%9C%E6%BC%94%E7%A4%BA.gif">
+
+<link rel="canonical" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Unity经验等级组件 | MPasser's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MPasser's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity经验等级组件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-01-06 00:00:00" itemprop="dateCreated datePublished" datetime="2026-01-06T00:00:00+08:00">2026-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="场景说明"><a href="#场景说明" class="headerlink" title="场景说明"></a>场景说明</h2><p>大多数游戏都需要经验等级系统。当玩家获得经验时，UI 通常要完成以下工作：</p>
+<ol>
+<li>经验条平滑增长；</li>
+<li>达到当前等级上限时触发升级；</li>
+<li>若一次获得大量经验，支持连续升级并连续播放动画。</li>
+</ol>
+<p>在此讨论如何设计一套通用的数据逻辑和动画实现。</p>
+<h2 id="效果演示"><a href="#效果演示" class="headerlink" title="效果演示"></a>效果演示</h2><p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/%E6%95%88%E6%9E%9C%E6%BC%94%E7%A4%BA.gif" alt="效果演示.gif"></p>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>进度条组件包含以下显示元素：</p>
+<ul>
+<li>进度条本体（<code>imgBar</code>）</li>
+<li>等级文本（<code>txtLevel</code>）</li>
+<li>经验文本（<code>txtExp</code>）</li>
+<li>百分比文本（<code>txtPercentage</code>）</li>
+</ul>
+<p>其中 <code>maxExp</code> 由组件维护，表示当前等级下的经验上限。</p>
+<h3 id="Set方法"><a href="#Set方法" class="headerlink" title="Set方法"></a>Set方法</h3><ul>
+<li><code>SetMaxExp</code>：设置当前等级经验上限</li>
+<li><code>SetExpBar</code>：设置进度条百分比</li>
+<li><code>SetExpText</code>：设置经验文本（如 <code>35/100</code>）</li>
+<li><code>SetLevelText</code>：设置等级文本（如 <code>Level 5</code>）</li>
+<li><code>SetPercentageText</code>：设置百分比文本（如 <code>35%</code>）</li>
+<li><code>SetView</code>：整体设置视图，包含上述所有内容</li>
+</ul>
+<p>其中<code>maxBarWidth</code>是进度条的最大长度，在<code>Awake()</code>初始化时获取，用于按比例缩放进度条宽度。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetMaxExp</span>(<span class="params"><span class="built_in">int</span> maxExp</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.maxExp = maxExp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetExpBar</span>(<span class="params"><span class="built_in">float</span> percentage</span>)</span> &#123;</span><br><span class="line">    percentage = Mathf.Clamp01(percentage);</span><br><span class="line">    imgBar.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, percentage * maxBarWidth);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetExpText</span>(<span class="params"><span class="built_in">int</span> progress, <span class="built_in">int</span> maxProgress, <span class="built_in">string</span> format</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> != txtExp) &#123;</span><br><span class="line">        txtExp.text = <span class="built_in">string</span>.Format(format, progress, maxProgress);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetLevelText</span>(<span class="params"><span class="built_in">int</span> level, <span class="built_in">string</span> format = <span class="string">&quot;Level &#123;0&#125;&quot;</span></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> != txtExp) &#123;</span><br><span class="line">        txtLevel.text = <span class="built_in">string</span>.Format(format, level);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="单段进度条动画"><a href="#单段进度条动画" class="headerlink" title="单段进度条动画"></a>单段进度条动画</h3><blockquote>
+<p>此处使用的是PrimeTween插件</p>
+</blockquote>
+<p>按 oriExp -&gt; targetExp 插值；每一帧同时更新进度条、经验文本和百分比文本。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Sequence <span class="title">GainExpAnim</span>(<span class="params"><span class="built_in">int</span> oriExp, <span class="built_in">int</span> targetExp, <span class="built_in">float</span> duration, <span class="built_in">string</span> format = <span class="string">&quot;&#123;0&#125;/&#123;1&#125;&quot;</span></span>)</span> &#123;</span><br><span class="line">    Sequence anim = Sequence.Create();</span><br><span class="line"></span><br><span class="line">    anim.Chain(Tween.Custom(oriExp, targetExp, duration, (x) =&gt; &#123;</span><br><span class="line">        <span class="keyword">this</span>.SetExpBar(x / maxExp);</span><br><span class="line">        <span class="keyword">this</span>.SetExpText((<span class="built_in">int</span>)x, maxExp, format);</span><br><span class="line">    &#125;));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> anim;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><h3 id="最大经验值数据"><a href="#最大经验值数据" class="headerlink" title="最大经验值数据"></a>最大经验值数据</h3><p>每个等级升级所需经验通常来自配置（表、ScriptableObject、JSON 等）。最简单可用整型数组表示：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="built_in">int</span>[] levelUpRequiredExpArr = <span class="keyword">new</span> <span class="built_in">int</span>[] &#123; <span class="number">10</span>, <span class="number">20</span>, <span class="number">20</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">50</span>, <span class="number">100</span> &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>表示从等级0升级到等级1需要10经验、1到2需20、2到3需20、3到4需50…</p>
+<p>如果不存在Level0，数组首个元素赋0即可。</p>
+<h3 id="供动画使用的数据"><a href="#供动画使用的数据" class="headerlink" title="供动画使用的数据"></a>供动画使用的数据</h3><p>在处理数据逻辑时，特别是需要考虑连续升级时，应当产生什么样的数据，能方便地供后续动画使用。</p>
+<p>就进度条组件本身，播动画需要的数据：动画开始时的经验值、动画结束时的经验值、当前等级最大经验值和动画时长。至于进度到达100%后归零之类的跳变逻辑，由外部业务自行安排，进度条组件不用关心。</p>
+<p>因为多数进度条有附带的经验值详情文本，所以需要分别知道经验值和最大经验值，而不仅是进度百分比。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">struct</span> AnimData &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> OriExp; <span class="comment">// 动画播放前的经验值</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> TargetExp; <span class="comment">// 动画播放结束时的经验值</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> MaxExp;  <span class="comment">// 动画播放期间的最大经验值</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Level; <span class="comment">// 动画播放期间的等级信息</span></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> Duration; <span class="comment">// 动画耗时</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在处理经验增加的逻辑时，除了维护等级<code>level</code>和经验值<code>exp</code>，也需要在过程中记录动画使用的数据，可参考代码实现：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">GainExp</span>(<span class="params"><span class="built_in">int</span> gainExp, <span class="keyword">out</span> List&lt;LevelExpView.AnimData&gt; animDataList</span>)</span> &#123;</span><br><span class="line">    animDataList = <span class="keyword">new</span> List&lt;LevelExpView.AnimData&gt;();</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">float</span> speed = <span class="number">0.1f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (IsMaxLevel(level)) &#123; <span class="comment">// 已经达到最大等级，不再增加经验</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">int</span> totalExp = exp + gainExp;</span><br><span class="line">    <span class="built_in">int</span> curLevel = level;</span><br><span class="line">    <span class="built_in">int</span> curExp = exp;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="built_in">int</span> levelUpRequiredExp = levelUpRequiredExpArr[curLevel];</span><br><span class="line">        LevelExpView.AnimData animData = <span class="keyword">new</span> LevelExpView.AnimData();</span><br><span class="line">        animData.Level = curLevel;</span><br><span class="line">        animData.OriExp = curExp;</span><br><span class="line">        animData.MaxExp = levelUpRequiredExp;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (totalExp &gt;= levelUpRequiredExp) &#123;</span><br><span class="line">            animData.TargetExp = levelUpRequiredExp;</span><br><span class="line">            animData.Duration = speed * (animData.TargetExp - animData.OriExp);</span><br><span class="line">            animDataList.Add(animData);</span><br><span class="line"></span><br><span class="line">            totalExp -= levelUpRequiredExp;</span><br><span class="line">            curLevel++;</span><br><span class="line">            curExp = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (IsMaxLevel(curLevel)) &#123; <span class="comment">// 到达最大等级，经验不再累加</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            animData.TargetExp = totalExp;</span><br><span class="line">            animData.Duration = speed * (animData.TargetExp - animData.OriExp);</span><br><span class="line">            <span class="keyword">if</span> (<span class="number">0</span> != animData.Duration) &#123;</span><br><span class="line">                animDataList.Add(animData);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            curExp = totalExp;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更新最终等级和经验</span></span><br><span class="line">    level = curLevel;</span><br><span class="line">    exp = curExp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用动画数据"><a href="#使用动画数据" class="headerlink" title="使用动画数据"></a>使用动画数据</h3><p>遍历<code>animDataList</code>，依次设置等级经验信息，播放进度条动画。</p>
+<p>这里只是一种写法，具体使用方式由产品需求决定。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Sequence <span class="title">GainExpProgressAnim</span>(<span class="params">List&lt;AnimData&gt; animDataList</span>)</span> &#123;</span><br><span class="line">    Sequence anim = Sequence.Create();</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">null</span> == animDataList || animDataList.Count == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> anim;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">foreach</span> (LevelExpView.AnimData animData <span class="keyword">in</span> animDataList) &#123;</span><br><span class="line">        anim.ChainCallback(() =&gt; &#123;</span><br><span class="line">            <span class="keyword">this</span>.SetLevelText(animData.Level);</span><br><span class="line">            <span class="keyword">this</span>.SetMaxExp(animData.MaxExp);</span><br><span class="line">        &#125;);</span><br><span class="line">        anim.Chain(<span class="keyword">this</span>.GainExpAnim(animData.OriExp, animData.TargetExp, animData.Duration));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> anim;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><details>
+  <summary>点击查看详细内容</summary>
+
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">LevelExpView</span> : <span class="title">MonoBehaviour</span> &#123;</span><br><span class="line">    [<span class="meta">SerializeField</span>] <span class="keyword">private</span> Image imgBar;</span><br><span class="line">    [<span class="meta">SerializeField</span>] <span class="keyword">private</span> TextMeshProUGUI txtLevel;</span><br><span class="line">    [<span class="meta">SerializeField</span>] <span class="keyword">private</span> TextMeshProUGUI txtExp;</span><br><span class="line">    [<span class="meta">SerializeField</span>] <span class="keyword">private</span> TextMeshProUGUI txtPercentage;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">int</span> maxExp;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> maxBarWidth;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span> &#123;</span><br><span class="line">        maxBarWidth = imgBar.rectTransform.rect.width;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Sets the maximum experience required for the current level.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;maxExp&quot;&gt;</span>The maximum experience for the current level.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetMaxExp</span>(<span class="params"><span class="built_in">int</span> maxExp</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.maxExp = maxExp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Sets the experience bar fill amount based on the given percentage value.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;percentage&quot;&gt;</span>The fill amount as a percentage, range is [0, 1].<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetExpBar</span>(<span class="params"><span class="built_in">float</span> percentage</span>)</span> &#123;</span><br><span class="line">        percentage = Mathf.Clamp01(percentage);</span><br><span class="line">        imgBar.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, percentage * maxBarWidth);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Sets the experience text based on the given progress and maximum progress values.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;progress&quot;&gt;</span>The current experience value.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;maxProgress&quot;&gt;</span>The maximum experience value.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;format&quot;&gt;</span>The format string for the experience text.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetExpText</span>(<span class="params"><span class="built_in">int</span> progress, <span class="built_in">int</span> maxProgress, <span class="built_in">string</span> format</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> != txtExp) &#123;</span><br><span class="line">            txtExp.text = <span class="built_in">string</span>.Format(format, progress, maxProgress);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Sets the level text based on the given level value.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;level&quot;&gt;</span>The current level value.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;format&quot;&gt;</span>The format string for the level text.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetLevelText</span>(<span class="params"><span class="built_in">int</span> level, <span class="built_in">string</span> format = <span class="string">&quot;Level &#123;0&#125;&quot;</span></span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> != txtLevel) &#123;</span><br><span class="line">            txtLevel.text = <span class="built_in">string</span>.Format(format, level);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Sets the percentage text based on the given percentage value.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;percentage&quot;&gt;</span>The fill amount as a percentage, range is [0, 1].<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;format&quot;&gt;</span>The format string for the percentage text.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;decimalPlaces&quot;&gt;</span>The number of decimal places to display.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetPercentageText</span>(<span class="params"><span class="built_in">float</span> percentage, <span class="built_in">string</span> format = <span class="string">&quot;&#123;0&#125;%&quot;</span>, <span class="built_in">int</span> decimalPlaces = <span class="number">0</span></span>)</span> &#123;</span><br><span class="line">        percentage = Mathf.Clamp01(percentage);</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> != txtPercentage) &#123;</span><br><span class="line">            txtPercentage.text = <span class="built_in">string</span>.Format(format, System.Math.Round(percentage * <span class="number">100</span>, decimalPlaces));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Sets the level-exp view.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;level&quot;&gt;</span>The current level.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;exp&quot;&gt;</span>The current exp in this level.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;maxExp&quot;&gt;</span>The maximum exp required for this level.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;levelFormat&quot;&gt;</span>The format string for level text.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;expFormat&quot;&gt;</span>The format string for exp text.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;percentageFormat&quot;&gt;</span>The format string for percentage text.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;percentageDecimalPlaces&quot;&gt;</span>The number of decimal places for percentage text.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetView</span>(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="built_in">int</span> level, <span class="built_in">int</span> exp, <span class="built_in">int</span> maxExp,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="built_in">string</span> levelFormat = <span class="string">&quot;Level &#123;0&#125;&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="built_in">string</span> expFormat = <span class="string">&quot;&#123;0&#125;/&#123;1&#125;&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="built_in">string</span> percentageFormat = <span class="string">&quot;&#123;0&#125;%&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="built_in">int</span> percentageDecimalPlaces = <span class="number">0</span></span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.SetMaxExp(maxExp);</span><br><span class="line">        <span class="keyword">this</span>.SetLevelText(level, levelFormat);</span><br><span class="line">        <span class="keyword">this</span>.SetExpText(exp, maxExp, expFormat);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">float</span> percentage = maxExp &gt; <span class="number">0</span> ? (<span class="built_in">float</span>)exp / maxExp : <span class="number">0f</span>;</span><br><span class="line">        <span class="keyword">this</span>.SetExpBar(percentage);</span><br><span class="line">        <span class="keyword">this</span>.SetPercentageText(percentage, percentageFormat, percentageDecimalPlaces);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Animates the experience gain.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;oriExp&quot;&gt;</span>The original experience value.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;targetExp&quot;&gt;</span>The target experience value.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;duration&quot;&gt;</span>The duration of the animation.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;format&quot;&gt;</span>The format string for the experience text.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;returns&gt;</span>A sequence representing the experience gain animation.<span class="doctag">&lt;/returns&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sequence <span class="title">GainExpAnim</span>(<span class="params"><span class="built_in">int</span> oriExp, <span class="built_in">int</span> targetExp, <span class="built_in">float</span> duration, <span class="built_in">string</span> format = <span class="string">&quot;&#123;0&#125;/&#123;1&#125;&quot;</span></span>)</span> &#123;</span><br><span class="line">        Sequence anim = Sequence.Create();</span><br><span class="line"></span><br><span class="line">        anim.Chain(Tween.Custom(oriExp, targetExp, duration, (x) =&gt; &#123;</span><br><span class="line">            <span class="built_in">float</span> percentage = maxExp &gt; <span class="number">0</span> ? x / maxExp : <span class="number">0f</span>;</span><br><span class="line">            <span class="keyword">this</span>.SetExpBar(percentage);</span><br><span class="line">            <span class="keyword">this</span>.SetExpText((<span class="built_in">int</span>)x, maxExp, format);</span><br><span class="line">            <span class="keyword">this</span>.SetPercentageText(percentage);</span><br><span class="line">        &#125;));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> anim;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Animates the experience gain based on a list of animation data, which may include multiple level-ups.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;animDataList&quot;&gt;</span>The list of animation data.<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;returns&gt;</span>A sequence representing the experience gain animation.<span class="doctag">&lt;/returns&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sequence <span class="title">GainExpProgressAnim</span>(<span class="params">List&lt;AnimData&gt; animDataList</span>)</span> &#123;</span><br><span class="line">        Sequence anim = Sequence.Create();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == animDataList || animDataList.Count == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> anim;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> (LevelExpView.AnimData animData <span class="keyword">in</span> animDataList) &#123;</span><br><span class="line">            Debug.Log(<span class="string">$&quot;oriProgress=<span class="subst">&#123;animData.OriExp&#125;</span>, targetProgress=<span class="subst">&#123;animData.TargetExp&#125;</span>, maxProgress=<span class="subst">&#123;animData.MaxExp&#125;</span>, duration=<span class="subst">&#123;animData.Duration&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">            anim.ChainCallback(() =&gt; &#123;</span><br><span class="line">                <span class="keyword">this</span>.SetLevelText(animData.Level);</span><br><span class="line">                <span class="keyword">this</span>.SetMaxExp(animData.MaxExp);</span><br><span class="line">            &#125;);</span><br><span class="line">            anim.Chain(<span class="keyword">this</span>.GainExpAnim(animData.OriExp, animData.TargetExp, animData.Duration));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> anim;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> Struct to hold animation data for experience gain.</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">struct</span> AnimData &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">int</span> OriExp;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">int</span> TargetExp;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">int</span> MaxExp;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">int</span> Level;</span><br><span class="line">        <span class="keyword">public</span> <span class="built_in">float</span> Duration;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</details>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C#</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E7%9A%84%E5%88%86%E7%B1%BB/" rel="prev" title="哈希函数的分类">
+      <i class="fa fa-chevron-left"></i> 哈希函数的分类
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD/" rel="next" title="Unity初始化加载">
+      Unity初始化加载 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E8%AF%B4%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">场景说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E6%BC%94%E7%A4%BA"><span class="nav-number">2.</span> <span class="nav-text">效果演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Set%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">Set方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E6%AE%B5%E8%BF%9B%E5%BA%A6%E6%9D%A1%E5%8A%A8%E7%94%BB"><span class="nav-number">3.2.</span> <span class="nav-text">单段进度条动画</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE"><span class="nav-number">4.</span> <span class="nav-text">数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E7%BB%8F%E9%AA%8C%E5%80%BC%E6%95%B0%E6%8D%AE"><span class="nav-number">4.1.</span> <span class="nav-text">最大经验值数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%9B%E5%8A%A8%E7%94%BB%E4%BD%BF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-number">4.2.</span> <span class="nav-text">供动画使用的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%8A%A8%E7%94%BB%E6%95%B0%E6%8D%AE"><span class="nav-number">4.3.</span> <span class="nav-text">使用动画数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text">完整代码</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MPasser</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://ressap.itch.io/" title="Itch → https:&#x2F;&#x2F;ressap.itch.io&#x2F;" rel="noopener" target="_blank"><i class="fa fa-gamepad fa-fw"></i>Itch</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/21327295" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;21327295" rel="noopener" target="_blank"><i class="fa fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/MPasser" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MPasser" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ressap2018@163.com" title="E-Mail → mailto:ressap2018@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MPasser</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

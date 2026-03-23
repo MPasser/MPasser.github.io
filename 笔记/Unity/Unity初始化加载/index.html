@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/Book_and_Quill_JE2_BE2.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/Book_and_Quill_JE2_BE2.png">
+  <link rel="mask-icon" href="/images/favicons/Book_and_Quill_JE2_BE2.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="前言很多游戏启动后都会先进入一个加载页，用于完成初始化逻辑，作用类似计算机的 Boot 流程。 在 Unity（尤其是移动端）里，常见做法是：先进入一个独立的初始化场景，完成资源与系统初始化后，再切换到真正的游玩场景。 这类初始化场景通常只包含一套简单 UI（进度条 + 当前任务文案），流程相对固定，因此适合抽象为可复用方案。 方案设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity初始化加载">
+<meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD/index.html">
+<meta property="og:site_name" content="MPasser&#39;s blog">
+<meta property="og:description" content="前言很多游戏启动后都会先进入一个加载页，用于完成初始化逻辑，作用类似计算机的 Boot 流程。 在 Unity（尤其是移动端）里，常见做法是：先进入一个独立的初始化场景，完成资源与系统初始化后，再切换到真正的游玩场景。 这类初始化场景通常只包含一套简单 UI（进度条 + 当前任务文案），流程相对固定，因此适合抽象为可复用方案。 方案设计">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-23T09:08:46.465Z">
+<meta property="article:author" content="MPasser">
+<meta property="article:tag" content="C#">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Unity初始化加载 | MPasser's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MPasser's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unity初始化加载
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-01-26 00:00:00" itemprop="dateCreated datePublished" datetime="2026-01-26T00:00:00+08:00">2026-01-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>很多游戏启动后都会先进入一个加载页，用于完成初始化逻辑，作用类似计算机的 Boot 流程。</p>
+<p>在 Unity（尤其是移动端）里，常见做法是：先进入一个独立的初始化场景，完成资源与系统初始化后，再切换到真正的游玩场景。</p>
+<p>这类初始化场景通常只包含一套简单 UI（进度条 + 当前任务文案），流程相对固定，因此适合抽象为可复用方案。</p>
+<h2 id="方案设计"><a href="#方案设计" class="headerlink" title="方案设计"></a>方案设计</h2><h3 id="加载任务"><a href="#加载任务" class="headerlink" title="加载任务"></a>加载任务</h3><p>将在初始化场景进行的加载任务分为三部分：加载主场景、自定义加载任务和等待最小加载时间。</p>
+<p>自定义任务本身是串行执行的；“并行”的是主场景异步加载与任务执行过程。这两部分任务都完成后，再去执行等待最小加载时间的逻辑。</p>
+<h3 id="进度信息"><a href="#进度信息" class="headerlink" title="进度信息"></a>进度信息</h3><p>总进度由两部分组成：</p>
+<ul>
+<li>场景加载进度（权重默认 60%）</li>
+<li>任务进度（权重默认 40%，且内部按任务 Weight 分配）</li>
+</ul>
+<p>核心计算逻辑：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">float</span> loadSceneProgress = load_main_scene_weight_proportion * (loadMainSceneAsyncOp.progress / max_load_scene_progress);</span><br><span class="line"></span><br><span class="line"><span class="built_in">float</span> weightedTaskProgress = <span class="number">0f</span>;</span><br><span class="line"><span class="keyword">if</span> (taskTotalWeight &gt; <span class="number">0f</span>) &#123;</span><br><span class="line">    weightedTaskProgress = (task.Progress * task.Weight + accumulatedWeight) / taskTotalWeight;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">float</span> taskProgress = (<span class="number">1</span> - load_main_scene_weight_proportion) * weightedTaskProgress;</span><br><span class="line"><span class="built_in">float</span> composedProgress = Mathf.Clamp01(loadSceneProgress + taskProgress);</span><br></pre></td></tr></table></figure>
+
+<p>加载主场景和自定义加载任务并行执行，总进度为二者各自的进度与权重相乘后相加。</p>
+<p>加载主场景的异步操作，其<code>allowSceneActivation</code>被设置为<code>false</code>，所以最大进度是0.9f（max_load_scene_progress），因此在计算其进度时，要用实际进度除以此值。</p>
+<h3 id="UI更新"><a href="#UI更新" class="headerlink" title="UI更新"></a>UI更新</h3><p>BootController 将显示进度拆成两层：</p>
+<ul>
+<li>actualProgress：逻辑上的真实进度</li>
+<li>currentProgress：UI 当前显示进度</li>
+</ul>
+<p>在 Update() 中通过 maxProgressSpeed 让 currentProgress 逐步追赶 actualProgress，形成平滑动画，避免进度条突跳。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (currentProgress &lt; actualProgress) &#123;</span><br><span class="line">    currentProgress += Time.deltaTime * maxProgressSpeed;</span><br><span class="line">    <span class="keyword">if</span> (currentProgress &gt; actualProgress) &#123;</span><br><span class="line">        currentProgress = actualProgress;</span><br><span class="line">    &#125;</span><br><span class="line">    SetProgressBar(currentProgress);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>SetProgressBar() 和 UpdateCurrentTaskName() 保持空实现，用于接入自定义 UI 方案。</p>
+<h3 id="自定义任务"><a href="#自定义任务" class="headerlink" title="自定义任务"></a>自定义任务</h3><p>设计一个接口，用于封装自定义加载任务</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IBootTask</span> &#123;</span><br><span class="line">    <span class="built_in">string</span> TaskName &#123; <span class="keyword">get</span>; &#125; <span class="comment">// 用于 UI 展示当前任务</span></span><br><span class="line">    <span class="built_in">float</span> Weight &#123; <span class="keyword">get</span>; &#125; <span class="comment">// 对总任务进度的影响权重</span></span><br><span class="line">    <span class="built_in">float</span> Progress &#123; <span class="keyword">get</span>; &#125; <span class="comment">// 任务内部实时进度 [0,1]</span></span><br><span class="line">    <span class="function">IEnumerator <span class="title">Execute</span>()</span>; <span class="comment">// 协程执行体</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个接口让启动逻辑具备很好的可扩展性，<br>只需新增一个实现类并在 RegisterBootTasks() 中注册即可。</p>
+<h4 id="固定的预定义任务"><a href="#固定的预定义任务" class="headerlink" title="固定的预定义任务"></a>固定的预定义任务</h4><p><code>WaitMinBootDura</code>是固定的最后一个任务。目的是防止加载速度过快，加载页显示时间太短。设置了一个最小时长，当所有任务执行完毕后，如果未达到此时长，则等待直至达到这个时长。</p>
+<p><code>WaitMainSceneLoadComplete</code>任务是固定的倒数第二个任务。目的是当自定义任务都执行完后，等待主场景加载完毕。这个任务的权重是0，因为加载主场景的进度值会在外部计算。</p>
+<h3 id="过渡动画"><a href="#过渡动画" class="headerlink" title="过渡动画"></a>过渡动画</h3><p>有些需求可能需要一个初始化场景和游玩场景之间的过渡动画。由于切换场景时中间有帧空隙，所以仅仅让初始化场景的最后一帧和游玩场景的第一帧相同无法达到很好的效果。</p>
+<p>最简单的方案是使用常驻对象DontDestroyOnLoad，过渡动画播放完后销毁自身。</p>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><details>
+  <summary>点击查看详细内容</summary>
+
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BootController</span> : <span class="title">MonoBehaviour</span> &#123;</span><br><span class="line">    <span class="comment">// 计时</span></span><br><span class="line">    [<span class="meta">SerializeField</span>] <span class="keyword">private</span> <span class="built_in">float</span> minBootDura = <span class="number">3.0f</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> bootStartTime;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 场景加载</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> main_scene_name = <span class="string">&quot;MainScene&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">float</span> load_main_scene_weight_proportion = <span class="number">0.6f</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">float</span> max_load_scene_progress = <span class="number">0.9f</span>;</span><br><span class="line">    <span class="keyword">private</span> AsyncOperation loadMainSceneAsyncOp;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 进度显示</span></span><br><span class="line">    [<span class="meta">SerializeField</span>] <span class="keyword">private</span> <span class="built_in">float</span> maxProgressSpeed = <span class="number">0.3f</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> currentProgress;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> actualProgress;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> List&lt;IBootTask&gt; bootTaskList = <span class="keyword">new</span>();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.RegisterBootTasks();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Start</span>()</span> &#123;</span><br><span class="line">        StartCoroutine(Boot());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 注册启动任务</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">RegisterBootTasks</span>()</span> &#123;</span><br><span class="line">        bootTaskList.Add(<span class="keyword">new</span> WaitFrameWorkReady());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 执行启动流程 </span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> IEnumerator <span class="title">Boot</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.BeforeExcuteBootTasks();</span><br><span class="line">        <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="title">StartCoroutine</span>(<span class="params"><span class="keyword">this</span>.ExecuteBootTasks(</span>))</span>;</span><br><span class="line">        <span class="keyword">this</span>.AfterExecuteBootTasks();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 启动流程开始前的准备工作，开始加载主场景、记录启动开始时间等。</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">BeforeExcuteBootTasks</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.bootStartTime = Time.time;</span><br><span class="line"></span><br><span class="line">        loadMainSceneAsyncOp = SceneManager.LoadSceneAsync(main_scene_name);</span><br><span class="line">        loadMainSceneAsyncOp.allowSceneActivation = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        bootTaskList.Add(<span class="keyword">new</span> WaitMainSceneLoadComplete(loadMainSceneAsyncOp, max_load_scene_progress));</span><br><span class="line">        bootTaskList.Add(<span class="keyword">new</span> WaitMinBootDura(<span class="keyword">this</span>.bootStartTime, minBootDura));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 执行启动任务，按照注册的顺序依次执行，并根据每个任务的权重和进度计算整体进度。</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> IEnumerator <span class="title">ExecuteBootTasks</span>()</span> &#123;</span><br><span class="line">        <span class="built_in">float</span> taskTotalWeight = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> task <span class="keyword">in</span> bootTaskList) &#123;</span><br><span class="line">            taskTotalWeight += task.Weight;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">float</span> accumulatedWeight = <span class="number">0f</span>;</span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> task <span class="keyword">in</span> bootTaskList) &#123;</span><br><span class="line">            <span class="keyword">this</span>.UpdateCurrentTaskName(task.TaskName);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> enumerator = task.Execute();</span><br><span class="line">            <span class="keyword">while</span> (enumerator.MoveNext()) &#123;</span><br><span class="line">                <span class="keyword">this</span>.RefreshComposedProgress(task, accumulatedWeight, taskTotalWeight);</span><br><span class="line">                <span class="keyword">yield</span> <span class="keyword">return</span> enumerator.Current;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 给当前任务“最终状态”补一次进度刷新，避免最后一次赋值发生在 yield 之后。</span></span><br><span class="line">            <span class="keyword">this</span>.RefreshComposedProgress(task, accumulatedWeight, taskTotalWeight);</span><br><span class="line"></span><br><span class="line">            accumulatedWeight += task.Weight;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 根据当前正在执行的任务的进度、权重，以及场景加载的进度，计算整体启动流程的进度，并更新显示。</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;task&quot;&gt;</span>当前正在执行的任务<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;accumulatedWeight&quot;&gt;</span>已完成任务的权重总和<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;taskTotalWeight&quot;&gt;</span>所有任务的权重总和<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">RefreshComposedProgress</span>(<span class="params">IBootTask task, <span class="built_in">float</span> accumulatedWeight, <span class="built_in">float</span> taskTotalWeight</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">float</span> loadSceneProgress = load_main_scene_weight_proportion * (loadMainSceneAsyncOp.progress / max_load_scene_progress);</span><br><span class="line">        <span class="built_in">float</span> weightedTaskProgress = <span class="number">0f</span>;</span><br><span class="line">        <span class="keyword">if</span> (taskTotalWeight &gt; <span class="number">0f</span>) &#123;</span><br><span class="line">            weightedTaskProgress = (task.Progress * task.Weight + accumulatedWeight) / taskTotalWeight;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">float</span> taskProgress = (<span class="number">1</span> - load_main_scene_weight_proportion) * weightedTaskProgress;</span><br><span class="line">        <span class="built_in">float</span> composedProgress = Mathf.Clamp01(loadSceneProgress + taskProgress);</span><br><span class="line">        <span class="keyword">this</span>.UpdateActualProgress(composedProgress);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 启动流程结束后的收尾工作，主要是将主场景的激活权交给加载操作，并将进度条直接设置为100%。</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">AfterExecuteBootTasks</span>()</span> &#123;</span><br><span class="line">        currentProgress = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">this</span>.SetProgressBar(currentProgress);</span><br><span class="line">        <span class="keyword">this</span>.UpdateCurrentTaskName(<span class="string">&quot;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.loadMainSceneAsyncOp.allowSceneActivation = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">region</span> View Update</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">UpdateActualProgress</span>(<span class="params"><span class="built_in">float</span> progress</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.actualProgress = progress;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Update</span>()</span> &#123;</span><br><span class="line">        <span class="comment">// 平滑更新当前进度</span></span><br><span class="line">        <span class="keyword">if</span> (currentProgress &lt; actualProgress) &#123;</span><br><span class="line">            currentProgress += Time.deltaTime * maxProgressSpeed;</span><br><span class="line">            <span class="keyword">if</span> (currentProgress &gt; actualProgress) &#123;</span><br><span class="line">                currentProgress = actualProgress;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">this</span>.SetProgressBar(currentProgress);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 更新进度条显示</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;progress&quot;&gt;</span>当前进度值，范围为0到1<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">SetProgressBar</span>(<span class="params"><span class="built_in">float</span> progress</span>)</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> 更新当前任务名称显示</span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;param name=&quot;taskName&quot;&gt;</span>当前任务名称<span class="doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">UpdateCurrentTaskName</span>(<span class="params"><span class="built_in">string</span> taskName</span>)</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">#<span class="keyword">endregion</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 启动任务接口，定义了启动任务的基本属性和执行方法</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IBootTask</span> &#123;</span><br><span class="line">    <span class="built_in">string</span> TaskName &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    <span class="built_in">float</span> Weight &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    <span class="built_in">float</span> Progress &#123; <span class="keyword">get</span>; &#125;</span><br><span class="line">    <span class="function">IEnumerator <span class="title">Execute</span>()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">region</span> Boot Tasks</span></span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 示例：等待框架准备就绪的任务</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WaitFrameWorkReady</span> : <span class="title">IBootTask</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> TaskName =&gt; <span class="string">&quot;Ready FrameWork&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> Weight =&gt; <span class="number">1.0f</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> Progress =&gt; progress;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> progress = <span class="number">0f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IEnumerator <span class="title">Execute</span>()</span> &#123;</span><br><span class="line">        Debug.Log(<span class="string">$&quot;......Start <span class="subst">&#123;<span class="keyword">nameof</span>(WaitFrameWorkReady)&#125;</span>......&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">1.0f</span></span>)</span>;</span><br><span class="line">        progress = <span class="number">0.5f</span>;</span><br><span class="line">        <span class="function"><span class="keyword">yield</span> <span class="keyword">return</span> <span class="keyword">new</span> <span class="title">WaitForSeconds</span>(<span class="params"><span class="number">1.0f</span></span>)</span>;</span><br><span class="line">        progress = <span class="number">1.0f</span>;</span><br><span class="line"></span><br><span class="line">        Debug.Log(<span class="string">$&quot;......End <span class="subst">&#123;<span class="keyword">nameof</span>(WaitFrameWorkReady)&#125;</span>......&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 固定任务：等待主场景加载完成</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WaitMainSceneLoadComplete</span> : <span class="title">IBootTask</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> AsyncOperation loadMainSceneAsyncOp;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> maxLoadSceneProgress;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WaitMainSceneLoadComplete</span>(<span class="params">AsyncOperation loadMainSceneAsyncOp, <span class="built_in">float</span> maxLoadSceneProgress</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.loadMainSceneAsyncOp = loadMainSceneAsyncOp;</span><br><span class="line">        <span class="keyword">this</span>.maxLoadSceneProgress = maxLoadSceneProgress;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> TaskName =&gt; <span class="string">&quot;Load Main Scene&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> Weight =&gt; <span class="number">0f</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> Progress =&gt; <span class="number">1.0f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IEnumerator <span class="title">Execute</span>()</span> &#123;</span><br><span class="line">        Debug.Log(<span class="string">$&quot;......Start <span class="subst">&#123;<span class="keyword">nameof</span>(WaitMainSceneLoadComplete)&#125;</span>......&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (loadMainSceneAsyncOp.progress &lt; maxLoadSceneProgress) &#123;</span><br><span class="line">            <span class="keyword">yield</span> <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Debug.Log(<span class="string">$&quot;......End <span class="subst">&#123;<span class="keyword">nameof</span>(WaitMainSceneLoadComplete)&#125;</span>......&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;summary&gt;</span></span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> 固定任务：等待达到最短启动时间</span></span><br><span class="line"><span class="comment"><span class="doctag">///</span> <span class="doctag">&lt;/summary&gt;</span></span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">WaitMinBootDura</span> : <span class="title">IBootTask</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> bootStartTime;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> minBootDura;</span><br><span class="line">    <span class="keyword">private</span> <span class="built_in">float</span> progress = <span class="number">0f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WaitMinBootDura</span>(<span class="params"><span class="built_in">float</span> bootStartTime, <span class="built_in">float</span> minBootDura</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.bootStartTime = bootStartTime;</span><br><span class="line">        <span class="keyword">this</span>.minBootDura = minBootDura;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> TaskName =&gt; <span class="string">&quot;Wait for miscs&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> Weight =&gt; <span class="number">1.0f</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">float</span> Progress =&gt; progress;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IEnumerator <span class="title">Execute</span>()</span> &#123;</span><br><span class="line">        Debug.Log(<span class="string">$&quot;......Start <span class="subst">&#123;<span class="keyword">nameof</span>(WaitMinBootDura)&#125;</span>......&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">float</span> elapsedTime = Time.time - bootStartTime;</span><br><span class="line">        <span class="keyword">if</span> (elapsedTime &lt; minBootDura) &#123;</span><br><span class="line">            progress = Mathf.Clamp01(elapsedTime / minBootDura);</span><br><span class="line">            <span class="keyword">while</span> (elapsedTime &lt; minBootDura) &#123;</span><br><span class="line">                elapsedTime = Time.time - bootStartTime;</span><br><span class="line">                progress = Mathf.Clamp01(elapsedTime / minBootDura);</span><br><span class="line">                <span class="keyword">yield</span> <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            progress = <span class="number">1.0f</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            progress = <span class="number">1.0f</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Debug.Log(<span class="string">$&quot;......End <span class="subst">&#123;<span class="keyword">nameof</span>(WaitMinBootDura)&#125;</span>......&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endregion</span></span></span><br></pre></td></tr></table></figure>
+
+</details>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C#</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/" rel="prev" title="Unity经验等级组件">
+      <i class="fa fa-chevron-left"></i> Unity经验等级组件
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.</span> <span class="nav-text">方案设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E4%BB%BB%E5%8A%A1"><span class="nav-number">2.1.</span> <span class="nav-text">加载任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%BA%A6%E4%BF%A1%E6%81%AF"><span class="nav-number">2.2.</span> <span class="nav-text">进度信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UI%E6%9B%B4%E6%96%B0"><span class="nav-number">2.3.</span> <span class="nav-text">UI更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BB%BB%E5%8A%A1"><span class="nav-number">2.4.</span> <span class="nav-text">自定义任务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%BA%E5%AE%9A%E7%9A%84%E9%A2%84%E5%AE%9A%E4%B9%89%E4%BB%BB%E5%8A%A1"><span class="nav-number">2.4.1.</span> <span class="nav-text">固定的预定义任务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%87%E6%B8%A1%E5%8A%A8%E7%94%BB"><span class="nav-number">2.5.</span> <span class="nav-text">过渡动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="nav-number">2.6.</span> <span class="nav-text">完整代码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">MPasser</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://ressap.itch.io/" title="Itch → https:&#x2F;&#x2F;ressap.itch.io&#x2F;" rel="noopener" target="_blank"><i class="fa fa-gamepad fa-fw"></i>Itch</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/21327295" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;21327295" rel="noopener" target="_blank"><i class="fa fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://github.com/MPasser" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MPasser" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ressap2018@163.com" title="E-Mail → mailto:ressap2018@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MPasser</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

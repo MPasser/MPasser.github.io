@@ -183,6 +183,164 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD/" class="post-title-link" itemprop="url">Unity初始化加载</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-01-26 00:00:00" itemprop="dateCreated datePublished" datetime="2026-01-26T00:00:00+08:00">2026-01-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>很多游戏启动后都会先进入一个加载页，用于完成初始化逻辑，作用类似计算机的 Boot 流程。</p>
+<p>在 Unity（尤其是移动端）里，常见做法是：先进入一个独立的初始化场景，完成资源与系统初始化后，再切换到真正的游玩场景。</p>
+<p>这类初始化场景通常只包含一套简单 UI（进度条 + 当前任务文案），流程相对固定，因此适合抽象为可复用方案。</p>
+<h2 id="方案设计"><a href="#方案设计" class="headerlink" title="方案设计"></a>方案设计</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/" class="post-title-link" itemprop="url">Unity经验等级组件</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2026-01-06 00:00:00" itemprop="dateCreated datePublished" datetime="2026-01-06T00:00:00+08:00">2026-01-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="场景说明"><a href="#场景说明" class="headerlink" title="场景说明"></a>场景说明</h2><p>大多数游戏都需要经验等级系统。当玩家获得经验时，UI 通常要完成以下工作：</p>
+<ol>
+<li>经验条平滑增长；</li>
+<li>达到当前等级上限时触发升级；</li>
+<li>若一次获得大量经验，支持连续升级并连续播放动画。</li>
+</ol>
+<p>在此讨论如何设计一套通用的数据逻辑和动画实现。</p>
+<h2 id="效果演示"><a href="#效果演示" class="headerlink" title="效果演示"></a>效果演示</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/%E5%85%B6%E4%BB%96/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E7%9A%84%E5%88%86%E7%B1%BB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -300,7 +458,7 @@
       
           <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近准备做个简单的寻物解谜游戏，所以对这个类型的游戏做了一点研究，记录一下过程中的想法。</p>
 <h2 id="寻物解谜游戏的特点"><a href="#寻物解谜游戏的特点" class="headerlink" title="寻物解谜游戏的特点"></a>寻物解谜游戏的特点</h2><p>在我看来，寻物解谜游戏的核心流程比较简单：即从游戏场景中获取信息或道具，利用这些来解开锁，开锁之后又获得新的信息或道具，继续解锁，直到达到目标，通关游戏。</p>
-<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IkRFU0NSSVBUSU9OIiBoZWlnaHQ9IjIyOXB4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6MTUzcHg7aGVpZ2h0OjIyOXB4O2JhY2tncm91bmQ6I0ZGRkZGRjsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDE1MyAyMjkiIHdpZHRoPSIxNTNweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PD9wbGFudHVtbCAxLjIwMjYuM2JldGE0Pz48ZGVmcy8+PGc+PCEtLWVudGl0eSA/Pz8/Pz8/LS0+PGcgY2xhc3M9ImVudGl0eSIgZGF0YS1xdWFsaWZpZWQtbmFtZT0iLi4uLi4uLiIgZGF0YS1zb3VyY2UtbGluZT0iMSIgaWQ9ImVudDAwMDIiPjxlbGxpcHNlIGN4PSI3Mi43MjUyIiBjeT0iMjEuNzQ1IiBmaWxsPSIjRjFGMUYxIiByeD0iNjYuNzI1MiIgcnk9IjE1Ljc0NSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iOTcuOTk5NiIgeD0iMjMuNzI1NCIgeT0iMjYuMzkzNSI+JiMzMzcxOTsmIzIxNDYyOyYjMzY5NDc7JiMyMDg1NTsmIzI1MTEwOyYjMjA0NDk7JiMyNDY4Nzs8L3RleHQ+PC9nPjwhLS1lbnRpdHkgPz8tLT48ZyBjbGFzcz0iZW50aXR5IiBkYXRhLXF1YWxpZmllZC1uYW1lPSIuLiIgZGF0YS1zb3VyY2UtbGluZT0iMSIgaWQ9ImVudDAwMDMiPjxlbGxpcHNlIGN4PSI3Mi43Mjg5IiBjeT0iMTEyLjAyMzYiIGZpbGw9IiNGMUYxRjEiIHJ4PSIyMi43OTg5IiByeT0iMTQuNTIzNiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMjcuOTk5OSIgeD0iNTguNzI5IiB5PSIxMTYuNjcyMSI+JiMyNDMyMDsmIzM4MTQ1OzwvdGV4dD48L2c+PCEtLWVudGl0eSA/Py0tPjxnIGNsYXNzPSJlbnRpdHkiIGRhdGEtcXVhbGlmaWVkLW5hbWU9Ii4uIiBkYXRhLXNvdXJjZS1saW5lPSIzIiBpZD0iZW50MDAwNiI+PGVsbGlwc2UgY3g9IjcyLjcyODkiIGN5PSIyMDEuMDczNiIgZmlsbD0iI0YxRjFGMSIgcng9IjIyLjc5ODkiIHJ5PSIxNC41MjM2IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyNy45OTk5IiB4PSI1OC43MjkiIHk9IjIwNS43MjIxIj4mIzM2ODkwOyYjMjA4NTE7PC90ZXh0PjwvZz48IS0tbGluayA/Pz8/Pz8/IHRvID8/LS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9ImVudDAwMDIiIGRhdGEtZW50aXR5LTI9ImVudDAwMDMiIGRhdGEtbGluay10eXBlPSJkZXBlbmRlbmN5IiBkYXRhLXNvdXJjZS1saW5lPSIxIiBpZD0ibG5rNCI+PHBhdGggZD0iTTYyLjg3LDM3LjcyIEM1OC44Myw1NC43NCA1Ny40MjYsNzYuNDQ1NiA2MS44NDYsOTIuNDg1NiIgZmlsbD0ibm9uZSIgaWQ9IiYjMzM3MTk7JiMyMTQ2MjsmIzM2OTQ3OyYjMjA4NTU7JiMyNTExMDsmIzIwNDQ5OyYjMjQ2ODc7LXRvLSYjMjQzMjA7JiMzODE0NTsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjYzLjQ0LDk4LjI3LDY0LjkwNTMsODguNTMwOCw2Mi4xMTE3LDkzLjQ0OTcsNTcuMTkyOCw5MC42NTYsNjMuNDQsOTguMjciIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48L2c+PCEtLWxpbmsgPz8gdG8gPz8/Pz8/Py0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSJlbnQwMDAzIiBkYXRhLWVudGl0eS0yPSJlbnQwMDAyIiBkYXRhLWxpbmstdHlwZT0iZGVwZW5kZW5jeSIgZGF0YS1zb3VyY2UtbGluZT0iMiIgaWQ9ImxuazUiPjxwYXRoIGQ9Ik04Mi40OCw5OC41NSBDODcuMjQsODIuNTUgODguOTIxNiw2MC42NTkzIDg0LjYyMTYsNDMuNTM5MyIgZmlsbD0ibm9uZSIgaWQ9IiYjMjQzMjA7JiMzODE0NTstdG8tJiMzMzcxOTsmIzIxNDYyOyYjMzY5NDc7JiMyMDg1NTsmIzI1MTEwOyYjMjA0NDk7JiMyNDY4NzsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjgzLjE2LDM3LjcyLDgxLjQ3MjksNDcuNDIzMyw4NC4zNzgsNDIuNTY5NCw4OS4yMzE5LDQ1LjQ3NDUsODMuMTYsMzcuNzIiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48L2c+PCEtLWxpbmsgPz8gdG8gPz8tLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iZW50MDAwMyIgZGF0YS1lbnRpdHktMj0iZW50MDAwNiIgZGF0YS1saW5rLXR5cGU9ImRlcGVuZGVuY3kiIGRhdGEtc291cmNlLWxpbmU9IjMiIGlkPSJsbms3Ij48cGF0aCBkPSJNNzIuNzMsMTI3IEM3Mi43MywxNDMuMjUgNzIuNzMsMTYzLjg5IDcyLjczLDE4MC4xMiIgZmlsbD0ibm9uZSIgaWQ9IiYjMjQzMjA7JiMzODE0NTstdG8tJiMzNjg5MDsmIzIwODUxOyIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iNzIuNzMsMTg2LjEyLDc2LjczLDE3Ny4xMiw3Mi43MywxODEuMTIsNjguNzMsMTc3LjEyLDcyLjczLDE4Ni4xMiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjwvZz48P3BsYW50dW1sLXNyYyBxdFpIal9yZl94SU5aUEVWamN2X3JaN2pvVnc1cG5oTlFvaGV3amVmUTNwVHFfMW9JZ0NjNXVtMTRTTWswcXRIb3VQUEpyaXRRbTgwPz48L2c+PC9zdmc+">
+<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBjb250ZW50U3R5bGVUeXBlPSJ0ZXh0L2NzcyIgZGF0YS1kaWFncmFtLXR5cGU9IkRFU0NSSVBUSU9OIiBoZWlnaHQ9IjIyOXB4IiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBzdHlsZT0id2lkdGg6MTUzcHg7aGVpZ2h0OjIyOXB4O2JhY2tncm91bmQ6I0ZGRkZGRjsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDE1MyAyMjkiIHdpZHRoPSIxNTNweCIgem9vbUFuZFBhbj0ibWFnbmlmeSI+PD9wbGFudHVtbCAxLjIwMjYuM2JldGE1Pz48ZGVmcy8+PGc+PCEtLWVudGl0eSA/Pz8/Pz8/LS0+PGcgY2xhc3M9ImVudGl0eSIgZGF0YS1xdWFsaWZpZWQtbmFtZT0iLi4uLi4uLiIgZGF0YS1zb3VyY2UtbGluZT0iMSIgaWQ9ImVudDAwMDIiPjxlbGxpcHNlIGN4PSI3Mi43MjUyIiBjeT0iMjEuNzQ1IiBmaWxsPSIjRjFGMUYxIiByeD0iNjYuNzI1MiIgcnk9IjE1Ljc0NSIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iOTcuOTk5NiIgeD0iMjMuNzI1NCIgeT0iMjYuMzkzNSI+JiMzMzcxOTsmIzIxNDYyOyYjMzY5NDc7JiMyMDg1NTsmIzI1MTEwOyYjMjA0NDk7JiMyNDY4Nzs8L3RleHQ+PC9nPjwhLS1lbnRpdHkgPz8tLT48ZyBjbGFzcz0iZW50aXR5IiBkYXRhLXF1YWxpZmllZC1uYW1lPSIuLiIgZGF0YS1zb3VyY2UtbGluZT0iMSIgaWQ9ImVudDAwMDMiPjxlbGxpcHNlIGN4PSI3Mi43Mjg5IiBjeT0iMTEyLjAyMzYiIGZpbGw9IiNGMUYxRjEiIHJ4PSIyMi43OTg5IiByeT0iMTQuNTIzNiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDowLjU7Ii8+PHRleHQgZmlsbD0iIzAwMDAwMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGxlbmd0aEFkanVzdD0ic3BhY2luZyIgdGV4dExlbmd0aD0iMjcuOTk5OSIgeD0iNTguNzI5IiB5PSIxMTYuNjcyMSI+JiMyNDMyMDsmIzM4MTQ1OzwvdGV4dD48L2c+PCEtLWVudGl0eSA/Py0tPjxnIGNsYXNzPSJlbnRpdHkiIGRhdGEtcXVhbGlmaWVkLW5hbWU9Ii4uIiBkYXRhLXNvdXJjZS1saW5lPSIzIiBpZD0iZW50MDAwNiI+PGVsbGlwc2UgY3g9IjcyLjcyODkiIGN5PSIyMDEuMDczNiIgZmlsbD0iI0YxRjFGMSIgcng9IjIyLjc5ODkiIHJ5PSIxNC41MjM2IiBzdHlsZT0ic3Ryb2tlOiMxODE4MTg7c3Ryb2tlLXdpZHRoOjAuNTsiLz48dGV4dCBmaWxsPSIjMDAwMDAwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nIiB0ZXh0TGVuZ3RoPSIyNy45OTk5IiB4PSI1OC43MjkiIHk9IjIwNS43MjIxIj4mIzM2ODkwOyYjMjA4NTE7PC90ZXh0PjwvZz48IS0tbGluayA/Pz8/Pz8/IHRvID8/LS0+PGcgY2xhc3M9ImxpbmsiIGRhdGEtZW50aXR5LTE9ImVudDAwMDIiIGRhdGEtZW50aXR5LTI9ImVudDAwMDMiIGRhdGEtbGluay10eXBlPSJkZXBlbmRlbmN5IiBkYXRhLXNvdXJjZS1saW5lPSIxIiBpZD0ibG5rNCI+PHBhdGggZD0iTTYyLjg3LDM3LjcyIEM1OC44Myw1NC43NCA1Ny40MjYsNzYuNDQ1NiA2MS44NDYsOTIuNDg1NiIgZmlsbD0ibm9uZSIgaWQ9IiYjMzM3MTk7JiMyMTQ2MjsmIzM2OTQ3OyYjMjA4NTU7JiMyNTExMDsmIzIwNDQ5OyYjMjQ2ODc7LXRvLSYjMjQzMjA7JiMzODE0NTsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjYzLjQ0LDk4LjI3LDY0LjkwNTMsODguNTMwOCw2Mi4xMTE3LDkzLjQ0OTcsNTcuMTkyOCw5MC42NTYsNjMuNDQsOTguMjciIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48L2c+PCEtLWxpbmsgPz8gdG8gPz8/Pz8/Py0tPjxnIGNsYXNzPSJsaW5rIiBkYXRhLWVudGl0eS0xPSJlbnQwMDAzIiBkYXRhLWVudGl0eS0yPSJlbnQwMDAyIiBkYXRhLWxpbmstdHlwZT0iZGVwZW5kZW5jeSIgZGF0YS1zb3VyY2UtbGluZT0iMiIgaWQ9ImxuazUiPjxwYXRoIGQ9Ik04Mi40OCw5OC41NSBDODcuMjQsODIuNTUgODguOTIxNiw2MC42NTkzIDg0LjYyMTYsNDMuNTM5MyIgZmlsbD0ibm9uZSIgaWQ9IiYjMjQzMjA7JiMzODE0NTstdG8tJiMzMzcxOTsmIzIxNDYyOyYjMzY5NDc7JiMyMDg1NTsmIzI1MTEwOyYjMjA0NDk7JiMyNDY4NzsiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48cG9seWdvbiBmaWxsPSIjMTgxODE4IiBwb2ludHM9IjgzLjE2LDM3LjcyLDgxLjQ3MjksNDcuNDIzMyw4NC4zNzgsNDIuNTY5NCw4OS4yMzE5LDQ1LjQ3NDUsODMuMTYsMzcuNzIiIHN0eWxlPSJzdHJva2U6IzE4MTgxODtzdHJva2Utd2lkdGg6MTsiLz48L2c+PCEtLWxpbmsgPz8gdG8gPz8tLT48ZyBjbGFzcz0ibGluayIgZGF0YS1lbnRpdHktMT0iZW50MDAwMyIgZGF0YS1lbnRpdHktMj0iZW50MDAwNiIgZGF0YS1saW5rLXR5cGU9ImRlcGVuZGVuY3kiIGRhdGEtc291cmNlLWxpbmU9IjMiIGlkPSJsbms3Ij48cGF0aCBkPSJNNzIuNzMsMTI3IEM3Mi43MywxNDMuMjUgNzIuNzMsMTYzLjg5IDcyLjczLDE4MC4xMiIgZmlsbD0ibm9uZSIgaWQ9IiYjMjQzMjA7JiMzODE0NTstdG8tJiMzNjg5MDsmIzIwODUxOyIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjxwb2x5Z29uIGZpbGw9IiMxODE4MTgiIHBvaW50cz0iNzIuNzMsMTg2LjEyLDc2LjczLDE3Ny4xMiw3Mi43MywxODEuMTIsNjguNzMsMTc3LjEyLDcyLjczLDE4Ni4xMiIgc3R5bGU9InN0cm9rZTojMTgxODE4O3N0cm9rZS13aWR0aDoxOyIvPjwvZz48P3BsYW50dW1sLXNyYyBxdFpIal9yZl94SU5aUEVWamN2X3JaN2pvVnc1cG5oTlFvaGV3amVmUTNwVHFfMW9JZ0NjNXVtMTRTTWswcXRIb3VQUEpyaXRRbTgwPz48L2c+PC9zdmc+">
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/%E7%AC%94%E8%AE%B0/Gameplay/%E5%85%B3%E4%BA%8E%E5%AF%BB%E7%89%A9%E8%A7%A3%E8%B0%9C%E6%B8%B8%E6%88%8F%E7%9A%84%E4%B8%80%E4%BA%9B%E6%83%B3%E6%B3%95/#more" rel="contents">
@@ -789,166 +947,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MPasser">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MPasser's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">Unity移动端异形屏相关</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-01-30 00:00:00" itemprop="dateCreated datePublished" datetime="2024-01-30T00:00:00+08:00">2024-01-30</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unity/" itemprop="url" rel="index"><span itemprop="name">Unity</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="异形屏"><a href="#异形屏" class="headerlink" title="异形屏"></a>异形屏</h2><p>异形屏指非传统矩形的屏幕。一些常见屏幕异形的原因：</p>
-<ul>
-<li>刘海屏，多是屏幕上方增加凹槽或打孔放置前置摄像头；</li>
-<li>曲面屏，多是屏幕沿左右两边弯曲。</li>
-<li>iPhone的虚拟Home Indicator，屏幕下方的小横线按钮。</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/%E5%88%98%E6%B5%B7%E5%B1%8F%E6%89%8B%E6%9C%BA.jpg" alt="刘海屏手机.jpg"><br><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/%E6%9B%B2%E9%9D%A2%E5%B1%8F%E6%89%8B%E6%9C%BA.jpg" alt="曲面屏手机.jpg"><br><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/IPhone%E7%9A%84Home%20Indicator.jpg" alt="IPhone的Home Indicator.jpg"></p>
-<p>Unity做移动端开发时，UI画布、各种元素都是基于矩形的，默认不考虑异形屏，直接铺满屏幕，但某些情况下，屏幕的“异形”部分会挡住应用内的关键显示，需要做相应处理。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MPasser">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MPasser's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/" class="post-title-link" itemprop="url">游戏中实现平台跳跃的技巧</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-11-30 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-30T00:00:00+08:00">2023-11-30</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Gameplay/" itemprop="url" rel="index"><span itemprop="name">Gameplay</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这是一篇翻译稿</p>
-<blockquote>
-<p>原文链接：<a target="_blank" rel="noopener" href="https://www.gamedeveloper.com/design/gamemaker-platformer-jumping-tips">GameMaker Platformer Jumping Tips</a></p>
-</blockquote>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>原始文章发布于<a target="_blank" rel="noopener" href="https://www.patreon.com/posts/14531948">Patreon</a></p>
-<p>我想谈谈新手在平台跳跃游戏制作中经常出现的一些跳跃手感问题。这篇文章非常适合正在学习游戏开发的学生，或是正学习GameMaker准备首次参加Game Jam的业余爱好者阅读。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Gameplay/%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%AE%9E%E7%8E%B0%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E7%9A%84%E6%8A%80%E5%B7%A7/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1018,7 +1016,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-count">77</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
