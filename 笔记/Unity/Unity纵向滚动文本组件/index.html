@@ -20,17 +20,17 @@
     var CONFIG = {"hostname":"mpasser.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="前言在很多 UI 场景里（比如金币变化、战力跳动、活动倒计时、积分榜刷新），直接替换文本会显得生硬。这篇文章记录一个轻量、易复用的滚动文本组件：用两个 TextMeshProUGUI 交替滚动，实现平滑的“数字翻动”视觉效果。 目标：  支持上滚和下滚； 支持一次传入多个文本并连续滚动； 可自定义总时长与缓动曲线； 结构简单，便于封装成通用组件。">
+  <meta name="description" content="前言在很多 UI 场景里（比如金币变化、战力跳动、活动倒计时、积分榜刷新），直接替换文本会显得生硬。在此讨论一种滚动文本组件的实现：用两个 TextMeshProUGUI 交替滚动，实现“数字滚动”视觉效果。 效果演示：  方案设计">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Unity纵向滚动文本组件">
 <meta property="og:url" content="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BA%B5%E5%90%91%E6%BB%9A%E5%8A%A8%E6%96%87%E6%9C%AC%E7%BB%84%E4%BB%B6/index.html">
 <meta property="og:site_name" content="MPasser&#39;s blog">
-<meta property="og:description" content="前言在很多 UI 场景里（比如金币变化、战力跳动、活动倒计时、积分榜刷新），直接替换文本会显得生硬。这篇文章记录一个轻量、易复用的滚动文本组件：用两个 TextMeshProUGUI 交替滚动，实现平滑的“数字翻动”视觉效果。 目标：  支持上滚和下滚； 支持一次传入多个文本并连续滚动； 可自定义总时长与缓动曲线； 结构简单，便于封装成通用组件。">
+<meta property="og:description" content="前言在很多 UI 场景里（比如金币变化、战力跳动、活动倒计时、积分榜刷新），直接替换文本会显得生硬。在此讨论一种滚动文本组件的实现：用两个 TextMeshProUGUI 交替滚动，实现“数字滚动”视觉效果。 效果演示：  方案设计">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BA%B5%E5%90%91%E6%BB%9A%E5%8A%A8%E6%96%87%E6%9C%AC%E7%BB%84%E4%BB%B6/%E6%95%88%E6%9E%9C%E6%BC%94%E7%A4%BA.gif">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BA%B5%E5%90%91%E6%BB%9A%E5%8A%A8%E6%96%87%E6%9C%AC%E7%BB%84%E4%BB%B6/%E7%BB%84%E4%BB%B6%E7%BB%93%E6%9E%84.jpg">
 <meta property="article:published_time" content="2026-03-22T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-30T10:46:54.981Z">
+<meta property="article:modified_time" content="2026-04-01T08:56:28.164Z">
 <meta property="article:author" content="MPasser">
 <meta property="article:tag" content="C#">
 <meta name="twitter:card" content="summary">
@@ -238,16 +238,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在很多 UI 场景里（比如金币变化、战力跳动、活动倒计时、积分榜刷新），直接替换文本会显得生硬。<br>这篇文章记录一个轻量、易复用的滚动文本组件：用两个 <code>TextMeshProUGUI</code> 交替滚动，实现平滑的“数字翻动”视觉效果。</p>
-<p>目标：</p>
-<ul>
-<li>支持上滚和下滚；</li>
-<li>支持一次传入多个文本并连续滚动；</li>
-<li>可自定义总时长与缓动曲线；</li>
-<li>结构简单，便于封装成通用组件。</li>
-</ul>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在很多 UI 场景里（比如金币变化、战力跳动、活动倒计时、积分榜刷新），直接替换文本会显得生硬。<br>在此讨论一种滚动文本组件的实现：用两个 <code>TextMeshProUGUI</code> 交替滚动，实现“数字滚动”视觉效果。</p>
+<p>效果演示：</p>
 <p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BA%B5%E5%90%91%E6%BB%9A%E5%8A%A8%E6%96%87%E6%9C%AC%E7%BB%84%E4%BB%B6/%E6%95%88%E6%9E%9C%E6%BC%94%E7%A4%BA.gif" alt="效果演示"></p>
-<h2 id="方案设计"><a href="#方案设计" class="headerlink" title="方案设计"></a>方案设计</h2><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>核心思路是“双缓冲”：</p>
+<h2 id="方案设计"><a href="#方案设计" class="headerlink" title="方案设计"></a>方案设计</h2><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>核心思路类似“双缓冲”：</p>
 <ol>
 <li>准备两个文本组件 <code>txtA</code> 与 <code>txtB</code>；</li>
 <li>当前显示组件从可视区中心位置移动到视野外；</li>
@@ -373,7 +367,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">77</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
