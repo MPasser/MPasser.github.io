@@ -28,7 +28,7 @@
 <meta property="og:description" content="简述Multi-Version Concurrency Control，多版本并发控制。一般是用在数据库管理系统中。 实现MVCC的实现主要依赖于记录中的三个隐藏字段、undolog和read view来实现的。 隐藏字段">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-09-28T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-04-08T09:44:57.493Z">
+<meta property="article:modified_time" content="2026-04-21T11:44:40.739Z">
 <meta property="article:author" content="MPasser">
 <meta name="twitter:card" content="summary">
 
@@ -240,11 +240,11 @@
 <ul>
 <li>DB_TRX_PTR，最新事务ID，记录最近修改该记录的事务ID</li>
 <li>DB_ROLL_PTR，回滚指针，指向该记录的上一个版本，配合undo log使用</li>
-<li>DB_ROW_ID，隐藏主键，数据表若为显式声明主键，实际使用此主键</li>
+<li>DB_ROW_ID，隐藏主键，数据表若未显式声明主键，实际使用此主键</li>
 </ul>
-<h3 id="undo-log"><a href="#undo-log" class="headerlink" title="undo log"></a>undo log</h3><p>回滚日志，在进行增删改操作是产生方便的回滚日志。</p>
+<h3 id="undo-log"><a href="#undo-log" class="headerlink" title="undo log"></a>undo log</h3><p>回滚日志，在进行增删改操作时记录数据副本。</p>
 <p>insert操作产生的undo log只在事务回滚时需要，事务提交后可立刻丢弃；<br>update和delete操作产生的undo log不仅回滚时需要，快照读时也需要。</p>
-<p>只有在快照读或事务回滚不涉及该日志是，对应日志才会被purge线程清除（先标记，后统一清楚）</p>
+<p>只有在快照读或事务回滚不涉及该日志时，对应日志才会被purge线程清除（先标记，后统一清除）</p>
 <h4 id="例"><a href="#例" class="headerlink" title="例"></a>例</h4><p>假设有编号为1的事务，向表中插入一条记录，那么插入后行数据状态为：</p>
 <table>
 <thead>
