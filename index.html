@@ -260,83 +260,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MPasser">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MPasser's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD/" class="post-title-link" itemprop="url">Unity初始化加载</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2026-01-26 00:00:00" itemprop="dateCreated datePublished" datetime="2026-01-26T00:00:00+08:00">2026-01-26</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>很多游戏启动后都会先进入一个加载页，用于完成初始化逻辑，作用类似计算机的 Boot 流程。</p>
-<p>在 Unity（尤其是移动端）里，常见做法是：先进入一个独立的初始化场景，完成资源与系统初始化后，再切换到真正的游玩场景。</p>
-<p>这类初始化场景通常只包含一套简单 UI（进度条 + 当前任务文案），流程相对固定，因此适合抽象为可复用方案。</p>
-<h2 id="方案设计"><a href="#方案设计" class="headerlink" title="方案设计"></a>方案设计</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8A%A0%E8%BD%BD/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%BB%8F%E9%AA%8C%E7%AD%89%E7%BA%A7%E7%BB%84%E4%BB%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -939,6 +862,87 @@
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mpasser.github.io/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MPasser">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MPasser's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">Unity移动端异形屏相关</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-01-30 00:00:00" itemprop="dateCreated datePublished" datetime="2024-01-30T00:00:00+08:00">2024-01-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C#</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="异形屏"><a href="#异形屏" class="headerlink" title="异形屏"></a>异形屏</h2><p>异形屏指非传统矩形的屏幕。一些常见屏幕异形的原因：</p>
+<ul>
+<li>刘海屏，多是屏幕上方增加凹槽或打孔放置前置摄像头；</li>
+<li>曲面屏，多是屏幕沿左右两边弯曲。</li>
+<li>iPhone的虚拟Home Indicator，屏幕下方的小横线按钮。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/%E5%88%98%E6%B5%B7%E5%B1%8F%E6%89%8B%E6%9C%BA.jpg" alt="刘海屏手机.jpg"><br><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/%E6%9B%B2%E9%9D%A2%E5%B1%8F%E6%89%8B%E6%9C%BA.jpg" alt="曲面屏手机.jpg"><br><img src="https://cdn.jsdelivr.net/gh/MPasser/ImgStorage@master/NoteBackup/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/IPhone%E7%9A%84Home%20Indicator.jpg" alt="IPhone的Home Indicator.jpg"></p>
+<p>Unity做移动端开发时，UI画布、各种元素都是基于矩形的，默认不考虑异形屏，直接铺满屏幕，但某些情况下，屏幕的“异形”部分会挡住应用内的关键显示，需要做相应处理。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%AC%94%E8%AE%B0/Unity/Unity%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%BC%82%E5%BD%A2%E5%B1%8F%E7%9B%B8%E5%85%B3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
   <nav class="pagination">
@@ -1008,7 +1012,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
